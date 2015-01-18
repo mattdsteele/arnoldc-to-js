@@ -1,0 +1,26 @@
+{
+  "name": "ArnoldCJS",
+  "version": "0.0.1",
+  "description": "Compiler from ArnoldC to Javascript",
+  "main": "main.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThomasCrvsr/arnoldc-to-js.git"
+  },
+  "keywords": [
+    "arnoldc",
+    "compiler"
+  ],
+  "author": "ThomasCrvsr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThomasCrvsr/arnoldc-to-js/issues"
+  },
+  "homepage": "https://github.com/ThomasCrvsr/arnoldc-to-js"
+}
