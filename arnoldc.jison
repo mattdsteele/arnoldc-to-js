@@ -25,6 +25,16 @@
 "BULLSHIT"							return 'ELSE'
 "YOU HAVE NO RESPECT FOR LOGIC"		return 'END_IF'
 
+"STICK AROUND"						return 'WHILE'
+"CHILL"								return 'END_WHILE'
+
+"LISTEN TO ME VERY CAREFULLY"			return 'METHOD_DECLARATION'
+"I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE"	return 'ARG_DECLARATION'
+"GIVE THESE PEOPLE AIR"				return 'END_ARG_DECLARATION'
+"HASTA LA VISTA, BABY"				return 'END_METHOD_DECLARATION'
+"DO IT NOW"							return 'CALL_METHOD'
+
+
 [a-zA-Z]+							return 'VARIABLE'
 
 \"(?:[^"\\]|\\.)*\"					return 'STRING_LITTERAL'
@@ -37,8 +47,20 @@
 %% /* language grammar */
 
 program
-	: BEGIN_MAIN statements END_MAIN EOF
-		{ return new MainExpression($2); }
+	: methods BEGIN_MAIN statements END_MAIN methods EOF
+		{ return $1.concat($5).concat(new MainExpression($3)); }
+	;
+
+methods
+	: methods method
+		{ $$ = $1.concat($2); }
+	|
+		{ $$ = []; }
+	;
+
+method
+	: METHOD_DECLARATION VARIABLE statements END_METHOD_DECLARATION
+		{ $$ = new MethodDeclarationExpression($2, $3); }
 	;
 
 statements
@@ -49,20 +71,22 @@ statements
 	;
 
 statement
-	: PRINT NUMBER
-		{ $$ = new PrintExpression($2); }
-	| PRINT VARIABLE
+	: PRINT integer
 		{ $$ = new PrintExpression($2); }
 	| PRINT STRING_LITTERAL
 		{ $$ = new PrintExpression($2); }
-	| DECLARE_INT VARIABLE SET_INITIAL_VALUE NUMBER
+	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
 		{ $$ = new IntDeclarationExpression($2, $4); }
-	| BEGIN_ASSIGN VARIABLE SET_VALUE NUMBER ops END_ASSIGN
+	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
 		{ $$ = new AssignementExpression($2, $4, $5);}
-	| IF NUMBER statements END_IF
+	| IF integer statements END_IF
 		{ $$ = new IfExpression($2, $3); }
-	| IF NUMBER statements ELSE statements END_IF
+	| IF integer statements ELSE statements END_IF
 		{ $$ = new IfExpression($2, $3, $5); }
+	| WHILE VARIABLE statements END_WHILE
+		{ $$ = new WhileExpression($2, $3); }
+	| CALL_METHOD VARIABLE
+		{ $$ = new CallExpression($2); }
 	;
 
 ops
@@ -72,24 +96,29 @@ ops
 		{ $$ = [$1]; }
 	;
 
+integer
+	: NUMBER
+	| VARIABLE
+	;
+
 op
-	: PLUS NUMBER
+	: PLUS integer
 		{ $$ = ' + ' + $2; }
-	| MINUS NUMBER
+	| MINUS integer
 		{ $$ = ' - ' + $2; }
-	| MULTIPLY NUMBER
+	| MULTIPLY integer
 		{ $$ = ' * ' + $2; }
-	| DIVIDE NUMBER
+	| DIVIDE integer
 		{ $$ = ' / ' + $2; }
-	| MODULO NUMBER
+	| MODULO integer
 		{ $$ = ' % ' + $2; }
-	| EQUAL NUMBER
+	| EQUAL integer
 		{ $$ = ' == ' + $2; }
-	| GREATER NUMBER
+	| GREATER integer
 		{ $$ = ' > ' + $2; }
-	| OR NUMBER
+	| OR integer
 		{ $$ = ' || ' + $2; }
-	| AND NUMBER
+	| AND integer
 		{ $$ = ' && ' + $2; }
 	;
 
@@ -123,4 +152,21 @@ function IfExpression (predicate, ifStatements, elseStatements) {
 	this.predicate = predicate;
 	this.ifStatements = ifStatements;
 	this.elseStatements = elseStatements;
+}
+
+function WhileExpression (predicate, whileStatements) {
+	this.type = 'WhileExpression';
+	this.predicate = predicate;
+	this.whileStatements = whileStatements;
+}
+
+function MethodDeclarationExpression (name, innerStatements) {
+	this.type = 'MethodDeclarationExpression';
+	this.name = name;
+	this.innerStatements = innerStatements;
+}
+
+function CallExpression (name) {
+	this.type = 'CallExpression';
+	this.name = name;
 }
