@@ -19,7 +19,7 @@ Then, it uses functions defined in the file Transpiler.js to produce the corresp
 
 If you want to change the grammar rules in arnoldc.jison, don't forget to generate the parser afterwards !
 
-First, you need to have Jison installed globally ```npm install -g jison``` and then to produce the parser : ```jison arnoldc.jison``
+First, you need to have Jison installed globally ```npm install -g jison``` and then to produce the parser : ```jison arnoldc.jison```
 
 ## Not supported yet
 
