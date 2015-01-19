@@ -11,9 +11,6 @@ if (process.argv[2]) {
 	if (ext.length > 0 && ext[ext.length -1] === 'arnoldc') {
 		var data = fs.readFileSync(fileName, 'utf-8');
 		var AST = parser.parse(data);
-
-		console.log(util.inspect(AST, {depth: null}));
-
 		var code = Transpiler.getJSCode(AST);
 		fs.writeFileSync(fileName+'.js', code);
 	} else {
