@@ -1,3 +1,7 @@
+# editor
+.idea/
+*.iml
+
 # node stuff
 node_modules/
 
