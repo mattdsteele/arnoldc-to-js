@@ -30,10 +30,12 @@
 
 "LISTEN TO ME VERY CAREFULLY"							return 'METHOD_DECLARATION'
 "I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE"	return 'ARG_DECLARATION'
-"GIVE THESE PEOPLE AIR"									return 'END_ARG_DECLARATION'
+"GIVE THESE PEOPLE AIR"									return 'NON_VOID_METHOD'
 "HASTA LA VISTA, BABY"									return 'END_METHOD_DECLARATION'
 "DO IT NOW"												return 'CALL_METHOD'
+"I'LL BE BACK"											return 'RETURN'
 
+"GET YOUR ASS TO MARS"									return 'ASSIGN_FROM_CALL'
 
 [a-zA-Z]+												return 'VARIABLE'
 
@@ -59,8 +61,25 @@ methods
 	;
 
 method
-	: METHOD_DECLARATION VARIABLE statements END_METHOD_DECLARATION
-		{ $$ = new MethodDeclarationExpression($2, null, $3); }
+	: METHOD_DECLARATION VARIABLE arguments_declared non_void statements END_METHOD_DECLARATION
+		{ $$ = new MethodDeclarationExpression($2, $3, $5); }
+	;
+
+arguments_declared
+	: arguments_declared argument_declared
+		{ $$ = $1.concat($2) }
+	|
+		{ $$ = []; }
+	;
+
+argument_declared
+	: ARG_DECLARATION VARIABLE
+		{ $$ = $2; }
+	;
+
+non_void
+	: NON_VOID_METHOD
+	|
 	;
 
 statements
@@ -85,8 +104,29 @@ statement
 		{ $$ = new IfExpression($2, $3, $5); }
 	| WHILE VARIABLE statements END_WHILE
 		{ $$ = new WhileExpression($2, $3); }
-	| CALL_METHOD VARIABLE
-		{ $$ = new CallExpression($2); }
+	| method_call
+		{ $$ = $1; }
+	| ASSIGN_FROM_CALL VARIABLE method_call
+		{ $$ = new AssignementFromCallExpression($2, $3); }
+	| RETURN integer
+		{ $$ = new ReturnExpression($2); }
+	;
+
+method_call
+	: CALL_METHOD VARIABLE arguments
+		{ $$ = new CallExpression($2, $3); }
+	;
+
+arguments
+	: arguments integer
+		{ $$ = $1.concat($2); }
+	|
+		{ $$ = []; }
+	;
+
+integer
+	: NUMBER
+	| VARIABLE
 	;
 
 ops
@@ -94,11 +134,6 @@ ops
 		{ $$ = $1.concat($2); }
 	| op
 		{ $$ = [$1]; }
-	;
-
-integer
-	: NUMBER
-	| VARIABLE
 	;
 
 op
@@ -167,7 +202,19 @@ function MethodDeclarationExpression (name, arguments, innerStatements) {
 	this.innerStatements = innerStatements;
 }
 
-function CallExpression (name) {
+function CallExpression (name, arguments) {
 	this.type = 'CallExpression';
 	this.name = name;
+	this.arguments = arguments;
+}
+
+function ReturnExpression (value) {
+	this.type = 'ReturnExpression';
+	this.value = value;
+}
+
+function AssignementFromCallExpression (name, functionCalled) {
+	this.type = 'AssignementFromCallExpression';
+	this.name = name;
+	this.functionCalled = functionCalled;
 }
