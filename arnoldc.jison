@@ -1,45 +1,45 @@
 %lex
 %%
 
-\s+ 							/* skip whitespaces */
-"IT'S SHOWTIME"						return 'BEGIN_MAIN'
-"YOU HAVE BEEN TERMINATED"			return 'END_MAIN'
-[0-9]+ 								return 'NUMBER'
-"TALK TO THE HAND"					return 'PRINT'
-"HEY CHRISTMAS TREE"				return 'DECLARE_INT'
-"YOU SET US UP"						return 'SET_INITIAL_VALUE'
-"GET TO THE CHOPPER"				return 'BEGIN_ASSIGN'
-"ENOUGH TALK"						return 'END_ASSIGN'
-"HERE IS MY INVITATION"				return 'SET_VALUE'
-"GET UP"							return 'PLUS'
-"GET DOWN"							return 'MINUS'
-"YOU'RE FIRED"						return 'MULTIPLY'
-"HE HAD TO SPLIT"					return 'DIVIDE'
-"I LET HIM GO"						return 'MODULO'
-"YOU ARE NOT YOU YOU ARE ME"		return 'EQUAL'
-"LET OFF SOME STEAM BENNET" 		return 'GREATER'
-"CONSIDER THAT A DIVORCE"			return 'OR'
-"KNOCK KNOCK"						return 'AND'
+\s+ 													/* skip whitespaces */
+"IT'S SHOWTIME"											return 'BEGIN_MAIN'
+"YOU HAVE BEEN TERMINATED"								return 'END_MAIN'
+\-?[0-9]+ 													return 'NUMBER'
+"TALK TO THE HAND"										return 'PRINT'
+"HEY CHRISTMAS TREE"									return 'DECLARE_INT'
+"YOU SET US UP"											return 'SET_INITIAL_VALUE'
+"GET TO THE CHOPPER"									return 'BEGIN_ASSIGN'
+"ENOUGH TALK"											return 'END_ASSIGN'
+"HERE IS MY INVITATION"									return 'SET_VALUE'
+"GET UP"												return 'PLUS'
+"GET DOWN"												return 'MINUS'
+"YOU'RE FIRED"											return 'MULTIPLY'
+"HE HAD TO SPLIT"										return 'DIVIDE'
+"I LET HIM GO"											return 'MODULO'
+"YOU ARE NOT YOU YOU ARE ME"							return 'EQUAL'
+"LET OFF SOME STEAM BENNET" 							return 'GREATER'
+"CONSIDER THAT A DIVORCE"								return 'OR'
+"KNOCK KNOCK"											return 'AND'
 
-"BECAUSE I'M GOING TO SAY PLEASE"	return 'IF'
-"BULLSHIT"							return 'ELSE'
-"YOU HAVE NO RESPECT FOR LOGIC"		return 'END_IF'
+"BECAUSE I'M GOING TO SAY PLEASE"						return 'IF'
+"BULLSHIT"												return 'ELSE'
+"YOU HAVE NO RESPECT FOR LOGIC"							return 'END_IF'
 
-"STICK AROUND"						return 'WHILE'
-"CHILL"								return 'END_WHILE'
+"STICK AROUND"											return 'WHILE'
+"CHILL"													return 'END_WHILE'
 
-"LISTEN TO ME VERY CAREFULLY"			return 'METHOD_DECLARATION'
+"LISTEN TO ME VERY CAREFULLY"							return 'METHOD_DECLARATION'
 "I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE"	return 'ARG_DECLARATION'
-"GIVE THESE PEOPLE AIR"				return 'END_ARG_DECLARATION'
-"HASTA LA VISTA, BABY"				return 'END_METHOD_DECLARATION'
-"DO IT NOW"							return 'CALL_METHOD'
+"GIVE THESE PEOPLE AIR"									return 'END_ARG_DECLARATION'
+"HASTA LA VISTA, BABY"									return 'END_METHOD_DECLARATION'
+"DO IT NOW"												return 'CALL_METHOD'
 
 
-[a-zA-Z]+							return 'VARIABLE'
+[a-zA-Z]+												return 'VARIABLE'
 
-\"(?:[^"\\]|\\.)*\"					return 'STRING_LITTERAL'
+\"(?:[^"\\]|\\.)*\"										return 'STRING_LITTERAL'
 
-<<EOF>> 							return 'EOF'
+<<EOF>> 												return 'EOF'
 
 /lex
 
@@ -60,7 +60,7 @@ methods
 
 method
 	: METHOD_DECLARATION VARIABLE statements END_METHOD_DECLARATION
-		{ $$ = new MethodDeclarationExpression($2, $3); }
+		{ $$ = new MethodDeclarationExpression($2, null, $3); }
 	;
 
 statements
@@ -160,9 +160,10 @@ function WhileExpression (predicate, whileStatements) {
 	this.whileStatements = whileStatements;
 }
 
-function MethodDeclarationExpression (name, innerStatements) {
+function MethodDeclarationExpression (name, arguments, innerStatements) {
 	this.type = 'MethodDeclarationExpression';
 	this.name = name;
+	this.arguments = arguments;
 	this.innerStatements = innerStatements;
 }
 

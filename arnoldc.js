@@ -93,7 +93,7 @@ case 3: case 6:
  this.$ = []; 
 break;
 case 4:
- this.$ = new MethodDeclarationExpression($$[$0-2], $$[$0-1]); 
+ this.$ = new MethodDeclarationExpression($$[$0-2], null, $$[$0-1]); 
 break;
 case 7: case 8:
  this.$ = new PrintExpression($$[$0]); 
@@ -332,9 +332,10 @@ function WhileExpression (predicate, whileStatements) {
 	this.whileStatements = whileStatements;
 }
 
-function MethodDeclarationExpression (name, innerStatements) {
+function MethodDeclarationExpression (name, arguments, innerStatements) {
 	this.type = 'MethodDeclarationExpression';
 	this.name = name;
+	this.arguments = arguments;
 	this.innerStatements = innerStatements;
 }
 
@@ -735,7 +736,7 @@ case 31:return 8
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:IT'S SHOWTIME\b)/,/^(?:YOU HAVE BEEN TERMINATED\b)/,/^(?:[0-9]+)/,/^(?:TALK TO THE HAND\b)/,/^(?:HEY CHRISTMAS TREE\b)/,/^(?:YOU SET US UP\b)/,/^(?:GET TO THE CHOPPER\b)/,/^(?:ENOUGH TALK\b)/,/^(?:HERE IS MY INVITATION\b)/,/^(?:GET UP\b)/,/^(?:GET DOWN\b)/,/^(?:YOU'RE FIRED\b)/,/^(?:HE HAD TO SPLIT\b)/,/^(?:I LET HIM GO\b)/,/^(?:YOU ARE NOT YOU YOU ARE ME\b)/,/^(?:LET OFF SOME STEAM BENNET\b)/,/^(?:CONSIDER THAT A DIVORCE\b)/,/^(?:KNOCK KNOCK\b)/,/^(?:BECAUSE I'M GOING TO SAY PLEASE\b)/,/^(?:BULLSHIT\b)/,/^(?:YOU HAVE NO RESPECT FOR LOGIC\b)/,/^(?:STICK AROUND\b)/,/^(?:CHILL\b)/,/^(?:LISTEN TO ME VERY CAREFULLY\b)/,/^(?:I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE\b)/,/^(?:GIVE THESE PEOPLE AIR\b)/,/^(?:HASTA LA VISTA, BABY\b)/,/^(?:DO IT NOW\b)/,/^(?:[a-zA-Z]+)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:$)/],
+rules: [/^(?:\s+)/,/^(?:IT'S SHOWTIME\b)/,/^(?:YOU HAVE BEEN TERMINATED\b)/,/^(?:^-?[0-9]+)/,/^(?:TALK TO THE HAND\b)/,/^(?:HEY CHRISTMAS TREE\b)/,/^(?:YOU SET US UP\b)/,/^(?:GET TO THE CHOPPER\b)/,/^(?:ENOUGH TALK\b)/,/^(?:HERE IS MY INVITATION\b)/,/^(?:GET UP\b)/,/^(?:GET DOWN\b)/,/^(?:YOU'RE FIRED\b)/,/^(?:HE HAD TO SPLIT\b)/,/^(?:I LET HIM GO\b)/,/^(?:YOU ARE NOT YOU YOU ARE ME\b)/,/^(?:LET OFF SOME STEAM BENNET\b)/,/^(?:CONSIDER THAT A DIVORCE\b)/,/^(?:KNOCK KNOCK\b)/,/^(?:BECAUSE I'M GOING TO SAY PLEASE\b)/,/^(?:BULLSHIT\b)/,/^(?:YOU HAVE NO RESPECT FOR LOGIC\b)/,/^(?:STICK AROUND\b)/,/^(?:CHILL\b)/,/^(?:LISTEN TO ME VERY CAREFULLY\b)/,/^(?:I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE\b)/,/^(?:GIVE THESE PEOPLE AIR\b)/,/^(?:HASTA LA VISTA, BABY\b)/,/^(?:DO IT NOW\b)/,/^(?:[a-zA-Z]+)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:$)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],"inclusive":true}}
 });
 return lexer;
