@@ -1,0 +1,9 @@
+# editor
+.idea/
+*.iml
+
+# node stuff
+node_modules/
+
+# transpiled files
+examples/**/*.js
