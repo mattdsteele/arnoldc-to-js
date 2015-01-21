@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,3],$V1=[1,5],$V2=[2,6],$V3=[5,8,10],$V4=[1,10],$V5=[1,11],$V6=[1,12],$V7=[1,13],$V8=[1,14],$V9=[1,15],$Va=[7,12,14,17,19,23,24,25,26,27,28],$Vb=[1,21],$Vc=[1,20],$Vd=[7,12,14,17,19,22,23,24,25,26,27,28,31,32,33,34,35,36,37,38,39],$Ve=[1,40],$Vf=[1,41],$Vg=[1,42],$Vh=[1,43],$Vi=[1,44],$Vj=[1,45],$Vk=[1,46],$Vl=[1,47],$Vm=[1,48],$Vn=[22,31,32,33,34,35,36,37,38,39];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,3],$V1=[1,5],$V2=[2,11],$V3=[5,8,10],$V4=[1,10],$V5=[1,11],$V6=[1,12],$V7=[1,13],$V8=[1,14],$V9=[1,16],$Va=[1,17],$Vb=[1,18],$Vc=[14,16,17,19,22,24,28,31,34,35,36],$Vd=[7,14,19,22,24,28,29,30,31,32,34,35,36],$Ve=[1,24],$Vf=[1,23],$Vg=[14,19,22,24,28,31,34,35,36],$Vh=[7,11,14,19,22,24,27,28,29,30,31,32,34,35,36,38,40,41,42,43,44,45,46,47,48],$Vi=[7,11,14,19,22,24,28,29,30,31,32,34,35,36,38],$Vj=[1,54],$Vk=[1,55],$Vl=[1,56],$Vm=[1,57],$Vn=[1,58],$Vo=[1,59],$Vp=[1,60],$Vq=[1,61],$Vr=[1,62],$Vs=[27,40,41,42,43,44,45,46,47,48];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"methods":4,"BEGIN_MAIN":5,"statements":6,"END_MAIN":7,"EOF":8,"method":9,"METHOD_DECLARATION":10,"VARIABLE":11,"END_METHOD_DECLARATION":12,"statement":13,"PRINT":14,"integer":15,"STRING_LITTERAL":16,"DECLARE_INT":17,"SET_INITIAL_VALUE":18,"BEGIN_ASSIGN":19,"SET_VALUE":20,"ops":21,"END_ASSIGN":22,"IF":23,"END_IF":24,"ELSE":25,"WHILE":26,"END_WHILE":27,"CALL_METHOD":28,"op":29,"NUMBER":30,"PLUS":31,"MINUS":32,"MULTIPLY":33,"DIVIDE":34,"MODULO":35,"EQUAL":36,"GREATER":37,"OR":38,"AND":39,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"BEGIN_MAIN",7:"END_MAIN",8:"EOF",10:"METHOD_DECLARATION",11:"VARIABLE",12:"END_METHOD_DECLARATION",14:"PRINT",16:"STRING_LITTERAL",17:"DECLARE_INT",18:"SET_INITIAL_VALUE",19:"BEGIN_ASSIGN",20:"SET_VALUE",22:"END_ASSIGN",23:"IF",24:"END_IF",25:"ELSE",26:"WHILE",27:"END_WHILE",28:"CALL_METHOD",30:"NUMBER",31:"PLUS",32:"MINUS",33:"MULTIPLY",34:"DIVIDE",35:"MODULO",36:"EQUAL",37:"GREATER",38:"OR",39:"AND"},
-productions_: [0,[3,6],[4,2],[4,0],[9,4],[6,2],[6,0],[13,2],[13,2],[13,4],[13,6],[13,4],[13,6],[13,4],[13,2],[21,2],[21,1],[15,1],[15,1],[29,2],[29,2],[29,2],[29,2],[29,2],[29,2],[29,2],[29,2],[29,2]],
+symbols_: {"error":2,"program":3,"methods":4,"BEGIN_MAIN":5,"statements":6,"END_MAIN":7,"EOF":8,"method":9,"METHOD_DECLARATION":10,"VARIABLE":11,"arguments_declared":12,"non_void":13,"END_METHOD_DECLARATION":14,"argument_declared":15,"ARG_DECLARATION":16,"NON_VOID_METHOD":17,"statement":18,"PRINT":19,"integer":20,"STRING_LITTERAL":21,"DECLARE_INT":22,"SET_INITIAL_VALUE":23,"BEGIN_ASSIGN":24,"SET_VALUE":25,"ops":26,"END_ASSIGN":27,"IF":28,"END_IF":29,"ELSE":30,"WHILE":31,"END_WHILE":32,"method_call":33,"ASSIGN_FROM_CALL":34,"RETURN":35,"CALL_METHOD":36,"arguments":37,"NUMBER":38,"op":39,"PLUS":40,"MINUS":41,"MULTIPLY":42,"DIVIDE":43,"MODULO":44,"EQUAL":45,"GREATER":46,"OR":47,"AND":48,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"BEGIN_MAIN",7:"END_MAIN",8:"EOF",10:"METHOD_DECLARATION",11:"VARIABLE",14:"END_METHOD_DECLARATION",16:"ARG_DECLARATION",17:"NON_VOID_METHOD",19:"PRINT",21:"STRING_LITTERAL",22:"DECLARE_INT",23:"SET_INITIAL_VALUE",24:"BEGIN_ASSIGN",25:"SET_VALUE",27:"END_ASSIGN",28:"IF",29:"END_IF",30:"ELSE",31:"WHILE",32:"END_WHILE",34:"ASSIGN_FROM_CALL",35:"RETURN",36:"CALL_METHOD",38:"NUMBER",40:"PLUS",41:"MINUS",42:"MULTIPLY",43:"DIVIDE",44:"MODULO",45:"EQUAL",46:"GREATER",47:"OR",48:"AND"},
+productions_: [0,[3,6],[4,2],[4,0],[9,6],[12,2],[12,0],[15,2],[13,1],[13,0],[6,2],[6,0],[18,2],[18,2],[18,4],[18,6],[18,4],[18,6],[18,4],[18,1],[18,3],[18,2],[33,3],[37,2],[37,0],[20,1],[20,1],[26,2],[26,1],[39,2],[39,2],[39,2],[39,2],[39,2],[39,2],[39,2],[39,2],[39,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -86,70 +86,82 @@ switch (yystate) {
 case 1:
  return $$[$0-5].concat($$[$0-1]).concat(new MainExpression($$[$0-3])); 
 break;
-case 2: case 5: case 15:
+case 2: case 10: case 23: case 27:
  this.$ = $$[$0-1].concat($$[$0]); 
 break;
-case 3: case 6:
+case 3: case 6: case 11: case 24:
  this.$ = []; 
 break;
 case 4:
- this.$ = new MethodDeclarationExpression($$[$0-2], $$[$0-1]); 
+ this.$ = new MethodDeclarationExpression($$[$0-4], $$[$0-3], $$[$0-1]); 
 break;
-case 7: case 8:
+case 5:
+ this.$ = $$[$0-1].concat($$[$0]) 
+break;
+case 7: case 19:
+ this.$ = $$[$0]; 
+break;
+case 12: case 13:
  this.$ = new PrintExpression($$[$0]); 
 break;
-case 9:
+case 14:
  this.$ = new IntDeclarationExpression($$[$0-2], $$[$0]); 
 break;
-case 10:
+case 15:
  this.$ = new AssignementExpression($$[$0-4], $$[$0-2], $$[$0-1]);
 break;
-case 11:
+case 16:
  this.$ = new IfExpression($$[$0-2], $$[$0-1]); 
 break;
-case 12:
+case 17:
  this.$ = new IfExpression($$[$0-4], $$[$0-3], $$[$0-1]); 
 break;
-case 13:
+case 18:
  this.$ = new WhileExpression($$[$0-2], $$[$0-1]); 
 break;
-case 14:
- this.$ = new CallExpression($$[$0]); 
-break;
-case 16:
- this.$ = [$$[$0]]; 
-break;
-case 19:
- this.$ = ' + ' + $$[$0]; 
-break;
 case 20:
- this.$ = ' - ' + $$[$0]; 
+ this.$ = new AssignementFromCallExpression($$[$0-1], $$[$0]); 
 break;
 case 21:
- this.$ = ' * ' + $$[$0]; 
+ this.$ = new ReturnExpression($$[$0]); 
 break;
 case 22:
+ this.$ = new CallExpression($$[$0-1], $$[$0]); 
+break;
+case 28:
+ this.$ = [$$[$0]]; 
+break;
+case 29:
+ this.$ = ' + ' + $$[$0]; 
+break;
+case 30:
+ this.$ = ' - ' + $$[$0]; 
+break;
+case 31:
+ this.$ = ' * ' + $$[$0]; 
+break;
+case 32:
  this.$ = ' / ' + $$[$0]; 
 break;
-case 23:
+case 33:
  this.$ = ' % ' + $$[$0]; 
 break;
-case 24:
+case 34:
  this.$ = ' == ' + $$[$0]; 
 break;
-case 25:
+case 35:
  this.$ = ' > ' + $$[$0]; 
 break;
-case 26:
+case 36:
  this.$ = ' || ' + $$[$0]; 
 break;
-case 27:
+case 37:
  this.$ = ' && ' + $$[$0]; 
 break;
 }
 },
-table: [o([5,10],$V0,{3:1,4:2}),{1:[3]},{5:[1,3],9:4,10:$V1},o([7,14,17,19,23,26,28],$V2,{6:6}),o($V3,[2,2]),{11:[1,7]},{7:[1,8],13:9,14:$V4,17:$V5,19:$V6,23:$V7,26:$V8,28:$V9},o([12,14,17,19,23,26,28],$V2,{6:16}),o([8,10],$V0,{4:17}),o($Va,[2,5]),{11:$Vb,15:18,16:[1,19],30:$Vc},{11:[1,22]},{11:[1,23]},{11:$Vb,15:24,30:$Vc},{11:[1,25]},{11:[1,26]},{12:[1,27],13:9,14:$V4,17:$V5,19:$V6,23:$V7,26:$V8,28:$V9},{8:[1,28],9:4,10:$V1},o($Va,[2,7]),o($Va,[2,8]),o($Vd,[2,17]),o($Vd,[2,18]),{18:[1,29]},{20:[1,30]},o([14,17,19,23,24,25,26,28],$V2,{6:31}),o([14,17,19,23,26,27,28],$V2,{6:32}),o($Va,[2,14]),o($V3,[2,4]),{1:[2,1]},{11:$Vb,15:33,30:$Vc},{11:$Vb,15:34,30:$Vc},{13:9,14:$V4,17:$V5,19:$V6,23:$V7,24:[1,35],25:[1,36],26:$V8,28:$V9},{13:9,14:$V4,17:$V5,19:$V6,23:$V7,26:$V8,27:[1,37],28:$V9},o($Va,[2,9]),{21:38,29:39,31:$Ve,32:$Vf,33:$Vg,34:$Vh,35:$Vi,36:$Vj,37:$Vk,38:$Vl,39:$Vm},o($Va,[2,11]),o([14,17,19,23,24,26,28],$V2,{6:49}),o($Va,[2,13]),{22:[1,50],29:51,31:$Ve,32:$Vf,33:$Vg,34:$Vh,35:$Vi,36:$Vj,37:$Vk,38:$Vl,39:$Vm},o($Vn,[2,16]),{11:$Vb,15:52,30:$Vc},{11:$Vb,15:53,30:$Vc},{11:$Vb,15:54,30:$Vc},{11:$Vb,15:55,30:$Vc},{11:$Vb,15:56,30:$Vc},{11:$Vb,15:57,30:$Vc},{11:$Vb,15:58,30:$Vc},{11:$Vb,15:59,30:$Vc},{11:$Vb,15:60,30:$Vc},{13:9,14:$V4,17:$V5,19:$V6,23:$V7,24:[1,61],26:$V8,28:$V9},o($Va,[2,10]),o($Vn,[2,15]),o($Vn,[2,19]),o($Vn,[2,20]),o($Vn,[2,21]),o($Vn,[2,22]),o($Vn,[2,23]),o($Vn,[2,24]),o($Vn,[2,25]),o($Vn,[2,26]),o($Vn,[2,27]),o($Va,[2,12])],
-defaultActions: {28:[2,1]},
+table: [o([5,10],$V0,{3:1,4:2}),{1:[3]},{5:[1,3],9:4,10:$V1},o([7,19,22,24,28,31,34,35,36],$V2,{6:6}),o($V3,[2,2]),{11:[1,7]},{7:[1,8],18:9,19:$V4,22:$V5,24:$V6,28:$V7,31:$V8,33:15,34:$V9,35:$Va,36:$Vb},o($Vc,[2,6],{12:19}),o([8,10],$V0,{4:20}),o($Vd,[2,10]),{11:$Ve,20:21,21:[1,22],38:$Vf},{11:[1,25]},{11:[1,26]},{11:$Ve,20:27,38:$Vf},{11:[1,28]},o($Vd,[2,19]),{11:[1,29]},{11:$Ve,20:30,38:$Vf},{11:[1,31]},o($Vg,[2,9],{13:32,15:33,16:[1,35],17:[1,34]}),{8:[1,36],9:4,10:$V1},o($Vd,[2,12]),o($Vd,[2,13]),o($Vh,[2,25]),o($Vh,[2,26]),{23:[1,37]},{25:[1,38]},o([19,22,24,28,29,30,31,34,35,36],$V2,{6:39}),o([19,22,24,28,31,32,34,35,36],$V2,{6:40}),{33:41,36:$Vb},o($Vd,[2,21]),o($Vi,[2,24],{37:42}),o($Vg,$V2,{6:43}),o($Vc,[2,5]),o($Vg,[2,8]),{11:[1,44]},{1:[2,1]},{11:$Ve,20:45,38:$Vf},{11:$Ve,20:46,38:$Vf},{18:9,19:$V4,22:$V5,24:$V6,28:$V7,29:[1,47],30:[1,48],31:$V8,33:15,34:$V9,35:$Va,36:$Vb},{18:9,19:$V4,22:$V5,24:$V6,28:$V7,31:$V8,32:[1,49],33:15,34:$V9,35:$Va,36:$Vb},o($Vd,[2,20]),o($Vd,[2,22],{20:50,11:$Ve,38:$Vf}),{14:[1,51],18:9,19:$V4,22:$V5,24:$V6,28:$V7,31:$V8,33:15,34:$V9,35:$Va,36:$Vb},o($Vc,[2,7]),o($Vd,[2,14]),{26:52,39:53,40:$Vj,41:$Vk,42:$Vl,43:$Vm,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr},o($Vd,[2,16]),o([19,22,24,28,29,31,34,35,36],$V2,{6:63}),o($Vd,[2,18]),o($Vi,[2,23]),o($V3,[2,4]),{27:[1,64],39:65,40:$Vj,41:$Vk,42:$Vl,43:$Vm,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr},o($Vs,[2,28]),{11:$Ve,20:66,38:$Vf},{11:$Ve,20:67,38:$Vf},{11:$Ve,20:68,38:$Vf},{11:$Ve,20:69,38:$Vf},{11:$Ve,20:70,38:$Vf},{11:$Ve,20:71,38:$Vf},{11:$Ve,20:72,38:$Vf},{11:$Ve,20:73,38:$Vf},{11:$Ve,20:74,38:$Vf},{18:9,19:$V4,22:$V5,24:$V6,28:$V7,29:[1,75],31:$V8,33:15,34:$V9,35:$Va,36:$Vb},o($Vd,[2,15]),o($Vs,[2,27]),o($Vs,[2,29]),o($Vs,[2,30]),o($Vs,[2,31]),o($Vs,[2,32]),o($Vs,[2,33]),o($Vs,[2,34]),o($Vs,[2,35]),o($Vs,[2,36]),o($Vs,[2,37]),o($Vd,[2,17])],
+defaultActions: {36:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -332,15 +344,28 @@ function WhileExpression (predicate, whileStatements) {
 	this.whileStatements = whileStatements;
 }
 
-function MethodDeclarationExpression (name, innerStatements) {
+function MethodDeclarationExpression (name, arguments, innerStatements) {
 	this.type = 'MethodDeclarationExpression';
 	this.name = name;
+	this.arguments = arguments;
 	this.innerStatements = innerStatements;
 }
 
-function CallExpression (name) {
+function CallExpression (name, arguments) {
 	this.type = 'CallExpression';
 	this.name = name;
+	this.arguments = arguments;
+}
+
+function ReturnExpression (value) {
+	this.type = 'ReturnExpression';
+	this.value = value;
+}
+
+function AssignementFromCallExpression (name, functionCalled) {
+	this.type = 'AssignementFromCallExpression';
+	this.name = name;
+	this.functionCalled = functionCalled;
 }/* generated by jison-lex 0.3.4 */
 var lexer = (function(){
 var lexer = ({
@@ -675,68 +700,72 @@ case 1:return 5
 break;
 case 2:return 7
 break;
-case 3:return 30
+case 3:return 38
 break;
-case 4:return 14
+case 4:return 19
 break;
-case 5:return 17
+case 5:return 22
 break;
-case 6:return 18
+case 6:return 23
 break;
-case 7:return 19
+case 7:return 24
 break;
-case 8:return 22
+case 8:return 27
 break;
-case 9:return 20
+case 9:return 25
 break;
-case 10:return 31
+case 10:return 40
 break;
-case 11:return 32
+case 11:return 41
 break;
-case 12:return 33
+case 12:return 42
 break;
-case 13:return 34
+case 13:return 43
 break;
-case 14:return 35
+case 14:return 44
 break;
-case 15:return 36
+case 15:return 45
 break;
-case 16:return 37
+case 16:return 46
 break;
-case 17:return 38
+case 17:return 47
 break;
-case 18:return 39
+case 18:return 48
 break;
-case 19:return 23
+case 19:return 28
 break;
-case 20:return 25
+case 20:return 30
 break;
-case 21:return 24
+case 21:return 29
 break;
-case 22:return 26
+case 22:return 31
 break;
-case 23:return 27
+case 23:return 32
 break;
 case 24:return 10
 break;
-case 25:return 'ARG_DECLARATION'
+case 25:return 16
 break;
-case 26:return 'END_ARG_DECLARATION'
+case 26:return 17
 break;
-case 27:return 12
+case 27:return 14
 break;
-case 28:return 28
+case 28:return 36
 break;
-case 29:return 11
+case 29:return 35
 break;
-case 30:return 16
+case 30:return 34
 break;
-case 31:return 8
+case 31:return 11
+break;
+case 32:return 21
+break;
+case 33:return 8
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:IT'S SHOWTIME\b)/,/^(?:YOU HAVE BEEN TERMINATED\b)/,/^(?:[0-9]+)/,/^(?:TALK TO THE HAND\b)/,/^(?:HEY CHRISTMAS TREE\b)/,/^(?:YOU SET US UP\b)/,/^(?:GET TO THE CHOPPER\b)/,/^(?:ENOUGH TALK\b)/,/^(?:HERE IS MY INVITATION\b)/,/^(?:GET UP\b)/,/^(?:GET DOWN\b)/,/^(?:YOU'RE FIRED\b)/,/^(?:HE HAD TO SPLIT\b)/,/^(?:I LET HIM GO\b)/,/^(?:YOU ARE NOT YOU YOU ARE ME\b)/,/^(?:LET OFF SOME STEAM BENNET\b)/,/^(?:CONSIDER THAT A DIVORCE\b)/,/^(?:KNOCK KNOCK\b)/,/^(?:BECAUSE I'M GOING TO SAY PLEASE\b)/,/^(?:BULLSHIT\b)/,/^(?:YOU HAVE NO RESPECT FOR LOGIC\b)/,/^(?:STICK AROUND\b)/,/^(?:CHILL\b)/,/^(?:LISTEN TO ME VERY CAREFULLY\b)/,/^(?:I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE\b)/,/^(?:GIVE THESE PEOPLE AIR\b)/,/^(?:HASTA LA VISTA, BABY\b)/,/^(?:DO IT NOW\b)/,/^(?:[a-zA-Z]+)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:IT'S SHOWTIME\b)/,/^(?:YOU HAVE BEEN TERMINATED\b)/,/^(?:-?[0-9]+)/,/^(?:TALK TO THE HAND\b)/,/^(?:HEY CHRISTMAS TREE\b)/,/^(?:YOU SET US UP\b)/,/^(?:GET TO THE CHOPPER\b)/,/^(?:ENOUGH TALK\b)/,/^(?:HERE IS MY INVITATION\b)/,/^(?:GET UP\b)/,/^(?:GET DOWN\b)/,/^(?:YOU'RE FIRED\b)/,/^(?:HE HAD TO SPLIT\b)/,/^(?:I LET HIM GO\b)/,/^(?:YOU ARE NOT YOU YOU ARE ME\b)/,/^(?:LET OFF SOME STEAM BENNET\b)/,/^(?:CONSIDER THAT A DIVORCE\b)/,/^(?:KNOCK KNOCK\b)/,/^(?:BECAUSE I'M GOING TO SAY PLEASE\b)/,/^(?:BULLSHIT\b)/,/^(?:YOU HAVE NO RESPECT FOR LOGIC\b)/,/^(?:STICK AROUND\b)/,/^(?:CHILL\b)/,/^(?:LISTEN TO ME VERY CAREFULLY\b)/,/^(?:I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE\b)/,/^(?:GIVE THESE PEOPLE AIR\b)/,/^(?:HASTA LA VISTA, BABY\b)/,/^(?:DO IT NOW\b)/,/^(?:I'LL BE BACK\b)/,/^(?:GET YOUR ASS TO MARS\b)/,/^(?:[a-zA-Z]+)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33],"inclusive":true}}
 });
 return lexer;
 })();

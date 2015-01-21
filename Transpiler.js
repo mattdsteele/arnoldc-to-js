@@ -34,6 +34,12 @@ function HandleNode (node, indent) {
 		case 'CallExpression':
 			return CallExpressionHandler(node, indent);
 			break;
+		case 'ReturnExpression':
+			return ReturnExpressionHandler(node, indent);
+			break;
+		case 'AssignementFromCallExpression':
+			return AssignementFromCallExpressionHandler(node, indent);
+			break;
 	}
 }
 
@@ -46,7 +52,7 @@ function IntDeclarationHandler (node, indent) {
 }
 
 function AssignementExpressionHandler (node, indent) {
-	var code = getIndentStr(indent) + 'var ' + node.name + ' = ';
+	var code = getIndentStr(indent) + 'var ' + node.name + ' = parseInt(';
 
 	if (node.operations && node.operations.length > 0) {
 		var operationsStr = node.initialValue;
@@ -55,9 +61,9 @@ function AssignementExpressionHandler (node, indent) {
 			operationsStr = '(' + operationsStr + operation + ')';
 		});
 
-		code += operationsStr +';\n';
+		code += operationsStr +');\n';
 	} else {
-		code +=  node.initialValue + ';\n';
+		code +=  node.initialValue + ');\n';
 	}
 
 	return code;
@@ -102,7 +108,7 @@ function WhileExpressionHandler (node, indent) {
 }
 
 function MethodDeclarationExpressionHandler (node, indent) {
-	var code = getIndentStr(indent) + 'function ' + node.name + ' () {\n';
+	var code = getIndentStr(indent) + 'function ' + node.name + ' ('+ node.arguments.join(', ') +') {\n';
 
 	code += node.innerStatements.map(function (node) {
 		return HandleNode(node, indent + 1);
@@ -116,7 +122,15 @@ function MethodDeclarationExpressionHandler (node, indent) {
 }
 
 function CallExpressionHandler (node, indent) {
-	return getIndentStr(indent) + node.name + '();\n';
+	return getIndentStr(indent) + node.name + '(' + node.arguments.join(', ') + ');\n';
+}
+
+function ReturnExpressionHandler (node, indent) {
+	return getIndentStr(indent) + 'return ' + node.value + ';\n';
+}
+
+function AssignementFromCallExpressionHandler (node, indent) {
+	return getIndentStr(indent) + 'var ' + node.name + ' = ' + HandleNode(node.functionCalled);
 }
 
 function MainExpressionHandler (node, indent) {
