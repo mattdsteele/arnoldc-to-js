@@ -4,8 +4,10 @@
 \s+ 													/* skip whitespaces */
 "IT'S SHOWTIME"											return 'BEGIN_MAIN'
 "YOU HAVE BEEN TERMINATED"								return 'END_MAIN'
-\-?[0-9]+ 													return 'NUMBER'
+\-?[0-9]+ 												return 'NUMBER'
 "TALK TO THE HAND"										return 'PRINT'
+"I LIED"												return 'FALSE'
+"NO PROBLEMO"											return 'TRUE'
 "HEY CHRISTMAS TREE"									return 'DECLARE_INT'
 "YOU SET US UP"											return 'SET_INITIAL_VALUE'
 "GET TO THE CHOPPER"									return 'BEGIN_ASSIGN'
@@ -37,7 +39,7 @@
 
 "GET YOUR ASS TO MARS"									return 'ASSIGN_FROM_CALL'
 
-[a-zA-Z]+												return 'VARIABLE'
+[a-zA-Z1-9_]+											return 'VARIABLE'
 
 \"(?:[^"\\]|\\.)*\"										return 'STRING_LITTERAL'
 
@@ -96,6 +98,9 @@ statement
 		{ $$ = new PrintExpression($2); }
 	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
 		{ $$ = new IntDeclarationExpression($2, $4); }
+	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
+		{ $$ = new AssignementExpression($2, $4, []);}
+
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
 		{ $$ = new AssignementExpression($2, $4, $5);}
 	| IF integer statements END_IF
@@ -127,6 +132,14 @@ arguments
 integer
 	: NUMBER
 	| VARIABLE
+	| boolean
+	;
+
+boolean
+	: FALSE
+		{ $$ = false; }
+	| TRUE
+		{ $$ = true; }
 	;
 
 ops
