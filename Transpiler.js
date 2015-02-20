@@ -14,6 +14,7 @@ function getIndentStr (level) {
 function HandleNode (node, indent) {
 	switch (node.type) {
 		case 'MainExpression':
+      console.log('main expr', node);
 			return MainExpressionHandler(node, indent);
 			break;
 		case 'PrintExpression':
@@ -163,13 +164,13 @@ function RootHandler (nodes) {
 }
 
 module.exports.getJSCode = RootHandler;
-module.exports.withSourceMaps = function(nodes) {
+module.exports.withSourceMaps = function(nodes, fileName) {
   var preamble = new sourceMap.SourceNode(null, null, null, '')
     .add('(function() {\n "use strict";\n');
 
-  console.log('first node: ', nodes);
   var codes = nodes.map(function(expr) {
-    return new sourceMap.SourceNode(null, null, null, HandleNode(expr, 1));
+    console.log('this thing', expr.line, expr.column);
+    return new sourceMap.SourceNode(expr.line, expr.column, fileName, HandleNode(expr, 1));
   });
 
   preamble.add(codes);

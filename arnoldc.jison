@@ -52,7 +52,7 @@
 
 program
 	: methods BEGIN_MAIN statements END_MAIN methods EOF
-		{ return $1.concat($5).concat(new MainExpression($3)); }
+		{ return $1.concat($5).concat(new MainExpression($3, @2.first_line, @2.first_column)); }
 	;
 
 methods
@@ -172,9 +172,11 @@ op
 
 %%
 
-function MainExpression (statements) {
+function MainExpression (statements, line, column) {
 	this.type = 'MainExpression';
 	this.statements = statements;
+  this.line = line;
+  this.column = column;
 }
 
 function PrintExpression (value) {
