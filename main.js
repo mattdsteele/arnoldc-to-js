@@ -1,5 +1,7 @@
-var parser = require('./arnoldc.js').parser;
+var jison = require('jison');
 var fs = require('fs');
+var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
+var parser = new jison.Parser(bnf);
 var util = require('util');
 var Transpiler = require('./Transpiler');
 
