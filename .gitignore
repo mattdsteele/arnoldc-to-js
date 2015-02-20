@@ -7,3 +7,4 @@ node_modules/
 
 # transpiled files
 examples/**/*.js
+examples/**/*.js.map

@@ -1,3 +1,6 @@
+var sourceMap = require('source-map'),
+  SourceNode = sourceMap.SourceNode;
+
 function getIndentStr (level) {
 	var indentStr = '';
 
