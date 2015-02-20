@@ -163,3 +163,19 @@ function RootHandler (nodes) {
 }
 
 module.exports.getJSCode = RootHandler;
+module.exports.withSourceMaps = function(nodes) {
+  var preamble = new sourceMap.SourceNode(null, null, null, '')
+    .add('(function() {\n "use strict";\n');
+
+  console.log('first node: ', nodes);
+  var codes = nodes.map(function(expr) {
+    return new sourceMap.SourceNode(null, null, null, HandleNode(expr, 1));
+  });
+
+  preamble.add(codes);
+
+  var postscript = new sourceMap.SourceNode(null, null, null, '')
+    .add('}());');
+
+  return preamble.add(postscript);
+};

@@ -20,9 +20,10 @@ if (process.argv[2]) {
       sourceMapName = jsFile + '.map';
 		fs.writeFileSync(fileName+'.golden.js', code);
 
-    //Try creating a normal source map
-    var mapping = new sourceMap.SourceNode(null, null, null, code);
+    var mapping = Transpiler.withSourceMaps(AST);
     var output = mapping.toStringWithSourceMap({ file: sourceMapName });
+    //add source map
+    output.code += "\n//# sourceMappingURL=" + sourceMapName;
     fs.writeFileSync(sourceMapName, output.map);
     fs.writeFileSync(jsFile, output.code);
 	} else {
