@@ -15,11 +15,9 @@ if (process.argv[2]) {
 	if (ext.length > 0 && ext[ext.length -1] === 'arnoldc') {
 		var data = fs.readFileSync(fileName, 'utf-8');
 		var AST = parser.parse(data);
-		var code = Transpiler.getJSCode(AST);
 
     var jsFile = fileName + '.js',
       sourceMapName = jsFile + '.map';
-		fs.writeFileSync(fileName+'.golden.js', code);
 
     var mapping = Transpiler.withSourceMaps(AST, fileName);
     mapping.setSourceContent(fileName, data);

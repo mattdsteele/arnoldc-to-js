@@ -93,9 +93,9 @@ statements
 
 statement
 	: PRINT integer
-		{ $$ = new yy.PrintExpression($2); }
+		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| PRINT STRING_LITTERAL
-		{ $$ = new yy.PrintExpression($2); }
+		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
 		{ $$ = new yy.IntDeclarationExpression($2, $4); }
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN

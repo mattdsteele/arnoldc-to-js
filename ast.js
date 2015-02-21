@@ -1,5 +1,7 @@
-function PrintExpression (value) {
+function PrintExpression (line, column, value) {
 	this.type = 'PrintExpression';
+  this.line = line;
+  this.column = column;
 	this.value = value;
 }
 
