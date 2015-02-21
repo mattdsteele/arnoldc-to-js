@@ -6,8 +6,8 @@
 "YOU HAVE BEEN TERMINATED"								return 'END_MAIN'
 \-?[0-9]+ 												return 'NUMBER'
 "TALK TO THE HAND"										return 'PRINT'
-"I LIED"												return 'FALSE'
-"NO PROBLEMO"											return 'TRUE'
+"@I LIED"												return 'FALSE'
+"@NO PROBLEMO"											return 'TRUE'
 "HEY CHRISTMAS TREE"									return 'DECLARE_INT'
 "YOU SET US UP"											return 'SET_INITIAL_VALUE'
 "GET TO THE CHOPPER"									return 'BEGIN_ASSIGN'
@@ -39,7 +39,7 @@
 
 "GET YOUR ASS TO MARS"									return 'ASSIGN_FROM_CALL'
 
-[a-zA-Z1-9_]+											return 'VARIABLE'
+[a-zA-Z0-9_]+											return 'VARIABLE'
 
 \"(?:[^"\\]|\\.)*\"										return 'STRING_LITTERAL'
 
@@ -52,7 +52,7 @@
 
 program
 	: methods BEGIN_MAIN statements END_MAIN methods EOF
-		{ return $1.concat($5).concat(new MainExpression($3, @2.first_line, @2.first_column)); }
+		{ return $1.concat($5).concat(new MainExpression($3, @2.first_line, @2.first_column, @4.first_line, @4.first_column)); }
 	;
 
 methods
@@ -172,11 +172,13 @@ op
 
 %%
 
-function MainExpression (statements, line, column) {
+function MainExpression (statements, startLine, startColumn, endLine, endColumn) {
 	this.type = 'MainExpression';
 	this.statements = statements;
-  this.line = line;
-  this.column = column;
+  this.line = startLine;
+  this.column = startColumn;
+  this.endLine = endLine;
+  this.endColumn = endColumn;
 }
 
 function PrintExpression (value) {
