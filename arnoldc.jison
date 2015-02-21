@@ -52,7 +52,7 @@
 
 program
 	: methods BEGIN_MAIN statements END_MAIN methods EOF
-		{ return $1.concat($5).concat(new MainExpression($3, @2.first_line, @2.first_column, @4.first_line, @4.first_column)); }
+		{ return $1.concat($5).concat(new yy.MainExpression($3, @2.first_line, @2.first_column, @4.first_line, @4.first_column)); }
 	;
 
 methods
@@ -64,7 +64,7 @@ methods
 
 method
 	: METHOD_DECLARATION VARIABLE arguments_declared non_void statements END_METHOD_DECLARATION
-		{ $$ = new MethodDeclarationExpression($2, $3, $5); }
+		{ $$ = new yy.MethodDeclarationExpression($2, $3, $5); }
 	;
 
 arguments_declared
@@ -93,33 +93,33 @@ statements
 
 statement
 	: PRINT integer
-		{ $$ = new PrintExpression($2); }
+		{ $$ = new yy.PrintExpression($2); }
 	| PRINT STRING_LITTERAL
-		{ $$ = new PrintExpression($2); }
+		{ $$ = new yy.PrintExpression($2); }
 	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
-		{ $$ = new IntDeclarationExpression($2, $4); }
+		{ $$ = new yy.IntDeclarationExpression($2, $4); }
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
-		{ $$ = new AssignementExpression($2, $4, []);}
+		{ $$ = new yy.AssignementExpression($2, $4, []);}
 
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
-		{ $$ = new AssignementExpression($2, $4, $5);}
+		{ $$ = new yy.AssignementExpression($2, $4, $5);}
 	| IF integer statements END_IF
-		{ $$ = new IfExpression($2, $3); }
+		{ $$ = new yy.IfExpression($2, $3); }
 	| IF integer statements ELSE statements END_IF
-		{ $$ = new IfExpression($2, $3, $5); }
+		{ $$ = new yy.IfExpression($2, $3, $5); }
 	| WHILE VARIABLE statements END_WHILE
-		{ $$ = new WhileExpression($2, $3); }
+		{ $$ = new yy.WhileExpression($2, $3); }
 	| method_call
 		{ $$ = $1; }
 	| ASSIGN_FROM_CALL VARIABLE method_call
-		{ $$ = new AssignementFromCallExpression($2, $3); }
+		{ $$ = new yy.AssignementFromCallExpression($2, $3); }
 	| RETURN integer
-		{ $$ = new ReturnExpression($2); }
+		{ $$ = new yy.ReturnExpression($2); }
 	;
 
 method_call
 	: CALL_METHOD VARIABLE arguments
-		{ $$ = new CallExpression($2, $3); }
+		{ $$ = new yy.CallExpression($2, $3); }
 	;
 
 arguments
@@ -172,66 +172,4 @@ op
 
 %%
 
-function MainExpression (statements, startLine, startColumn, endLine, endColumn) {
-	this.type = 'MainExpression';
-	this.statements = statements;
-  this.line = startLine;
-  this.column = startColumn;
-  this.endLine = endLine;
-  this.endColumn = endColumn;
-}
 
-function PrintExpression (value) {
-	this.type = 'PrintExpression';
-	this.value = value;
-}
-
-function IntDeclarationExpression (name, value) {
-	this.type = 'IntDeclarationExpression';
-	this.name = name;
-	this.value = value;
-}
-
-function AssignementExpression (name, initialValue, operations) {
-	this.type = 'AssignementExpression';
-	this.name = name;
-	this.initialValue = initialValue;
-	this.operations = operations;
-}
-
-function IfExpression (predicate, ifStatements, elseStatements) {
-	this.type = 'IfExpression';
-	this.predicate = predicate;
-	this.ifStatements = ifStatements;
-	this.elseStatements = elseStatements;
-}
-
-function WhileExpression (predicate, whileStatements) {
-	this.type = 'WhileExpression';
-	this.predicate = predicate;
-	this.whileStatements = whileStatements;
-}
-
-function MethodDeclarationExpression (name, arguments, innerStatements) {
-	this.type = 'MethodDeclarationExpression';
-	this.name = name;
-	this.arguments = arguments;
-	this.innerStatements = innerStatements;
-}
-
-function CallExpression (name, arguments) {
-	this.type = 'CallExpression';
-	this.name = name;
-	this.arguments = arguments;
-}
-
-function ReturnExpression (value) {
-	this.type = 'ReturnExpression';
-	this.value = value;
-}
-
-function AssignementFromCallExpression (name, functionCalled) {
-	this.type = 'AssignementFromCallExpression';
-	this.name = name;
-	this.functionCalled = functionCalled;
-}

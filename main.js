@@ -2,6 +2,7 @@ var jison = require('jison');
 var fs = require('fs');
 var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
 var parser = new jison.Parser(bnf);
+parser.yy = require('./ast');
 var util = require('util');
 var Transpiler = require('./Transpiler');
 var sourceMap = require('source-map');
