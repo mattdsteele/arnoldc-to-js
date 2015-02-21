@@ -21,6 +21,7 @@ if (process.argv[2]) {
 		fs.writeFileSync(fileName+'.golden.js', code);
 
     var mapping = Transpiler.withSourceMaps(AST, fileName);
+    mapping.setSourceContent(fileName, data);
     var output = mapping.toStringWithSourceMap({ file: sourceMapName });
     //add source map
     output.code += "\n//# sourceMappingURL=" + sourceMapName;
