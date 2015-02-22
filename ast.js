@@ -138,11 +138,13 @@ WhileExpression.prototype.compile = function(indent, fileName) {
 };
 
 
-function MethodDeclarationExpression (line, column, name, arguments, innerStatements) {
+function MethodDeclarationExpression (line, column, name, arguments, innerStatements, endLine, endColumn) {
   AstNode.call(this, line, column);
 	this.name = name;
 	this.arguments = arguments;
 	this.innerStatements = innerStatements;
+  this.endLine = endLine;
+  this.endColumn = endColumn;
 }
 
 MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
@@ -158,13 +160,12 @@ MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
       }
     });
 
-    node.add(') {\n')
+    return node.add(') {\n')
     .add(this.innerStatements.map(function(statement) {
       return statement.compile(indent + 1, fileName);
     }))
     .add(indentNode(indent))
-    .add('}\n');
-    return node;
+    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
 };
 
 function CallExpression (line, column, name, arguments) {
