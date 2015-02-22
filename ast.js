@@ -77,7 +77,9 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 		node.add(this.initialValue + ');\n');
 	}
   node.add(indentNode(indent))
-    .add('if(typeof(' + this.name + ') === "boolean") { ' + this.name + ' = ' + this.name + ' ? 1 : 0; }\n');
+    .add('if(typeof(' + this.name + ') === "boolean") { ' + this.name + ' = ' + this.name + ' ? 1 : 0; }\n')
+    .add(indentNode(indent))
+    .add(this.name + ' = Math.round(' + this.name + ');\n');
 
 	return node;
 };
