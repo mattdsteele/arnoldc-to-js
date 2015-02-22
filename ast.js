@@ -55,14 +55,15 @@ IntDeclarationExpression.prototype.compile = function(indent, fileName) {
 };
 
 //TODO nodeify this
-function AssignementExpression (name, initialValue, operations) {
+function AssignementExpression (line, column, name, initialValue, operations) {
+  AstNode.call(this, line, column);
 	this.name = name;
 	this.initialValue = initialValue;
 	this.operations = operations;
 }
-
+AssignementExpression.prototype = Object.create(AstNode.prototype);
 AssignementExpression.prototype.compile = function(indent, fileName) {
-	var code = getIndentStr(indent) + 'var ' + this.name + ' = parseInt(';
+  var node = this._sn(indent, fileName, 'var ' + this.name + ' = parseInt(');
 
 	if (this.operations && this.operations.length > 0) {
 		var operationsStr = this.initialValue;
@@ -71,12 +72,12 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 			operationsStr = '(' + operationsStr + operation + ')';
 		});
 
-		code += operationsStr +');\n';
+		node.add(operationsStr +');\n');
 	} else {
-		code +=  this.initialValue + ');\n';
+		node.add(this.initialValue + ');\n');
 	}
 
-	return code;
+	return node;
 };
 
 function IfExpression (line, column, predicate, ifStatements, elseStatements) {
@@ -92,9 +93,7 @@ IfExpression.prototype.compile = function(indent, fileName) {
 
 	expr.add(this.ifStatements.map(function (node) {
 		return node.compile(indent + 1, fileName);
-	}).reduce(function (block, line) {
-		return block + line;
-	}, ''));
+  }));
 
 	expr.add(getIndentStr(indent) + '} \n');
 
@@ -102,31 +101,27 @@ IfExpression.prototype.compile = function(indent, fileName) {
 		expr.add(getIndentStr(indent) + 'else { \n')
     .add(this.elseStatements.map(function (node) {
 			return node.compile(indent+1, fileName);
-		}).reduce(function (block, line) {
-			return block + line;
-		}, ''));
+    }));
 		expr.add(getIndentStr(indent) + '}\n');
 	}
 	return expr;
 };
 
-function WhileExpression (predicate, whileStatements) {
+function WhileExpression (line, column, predicate, whileStatements) {
+  AstNode.call(this, line, column);
 	this.predicate = predicate;
 	this.whileStatements = whileStatements;
 }
-
+WhileExpression.prototype = Object.create(AstNode.prototype);
 WhileExpression.prototype.compile = function(indent, fileName) {
-	var code = getIndentStr(indent) + 'while (' + this.predicate + ') {\n';
+  var node = this._sn(indent, fileName, 'while (' + this.predicate + ') {\n');
+	node.add(this.whileStatements.map(function (statement) {
+		return statement.compile(indent + 1, fileName);
+  }));
 
-	code += this.whileStatements.map(function (node) {
-		return node.compile(indent + 1, fileName);
-	}).reduce(function (block, line) {
-		return block + line;
-	}, '');
+	node.add(getIndentStr(indent) + '}\n');
 
-	code += getIndentStr(indent) + '}\n';
-
-	return code;
+	return node;
 };
 
 

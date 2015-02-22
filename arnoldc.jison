@@ -99,16 +99,16 @@ statement
 	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
 		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
-		{ $$ = new yy.AssignementExpression($2, $4, []);}
+		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, []);}
 
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
-		{ $$ = new yy.AssignementExpression($2, $4, $5);}
+		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, $5);}
 	| IF integer statements END_IF
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3); }
 	| IF integer statements ELSE statements END_IF
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5); }
 	| WHILE VARIABLE statements END_WHILE
-		{ $$ = new yy.WhileExpression($2, $3); }
+		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3); }
 	| method_call
 		{ $$ = $1; }
 	| ASSIGN_FROM_CALL VARIABLE method_call
