@@ -3,21 +3,22 @@
 
   var fs = require('fs');
   var gulp = require('gulp');
+  var jison = require('jison');
   var assert = require('assert');
   var fileOptions = {encoding: 'utf-8'};
 
-  var parser = require('../arnoldc.js');
-  var Transpiler = require('../Transpiler.js');
+  var Transpiler = require('../Transpiler');
+  var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
+  var parser = new jison.Parser(bnf);
+  parser.yy = require('../ast');
 
   var cwd = process.cwd();
-  console.log(cwd);
 
   function getCode(lePath) {
     // from main.js
     var data = fs.readFileSync(lePath, 'utf-8');
     var AST = parser.parse(data);
-    var code = Transpiler.getJSCode(AST);
-    //console.log(code);
+    var code = Transpiler.withSourceMaps(AST, lePath).toString();
     return code;
   }
 
