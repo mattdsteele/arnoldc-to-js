@@ -6,7 +6,11 @@ You can read about the original project here : https://github.com/lhartikk/Arnol
 
 ## How to use it
 
-Just use the command ```node main PATH_TO_YOUR_FILE.arnoldc``` and it will output two files:
+Install: `npm install arnoldc.js --global`
+
+Run: `arnoldc.js {{file.arnoldc}}`
+
+It will output two files:
 
 * Compiled javascript: `PATH_TO_YOUR_FILE.arnoldc.js`
 * Source Map javascript: `PATH_TO_YOUR_FILE.arnoldc.js.map`

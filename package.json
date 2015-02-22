@@ -1,5 +1,5 @@
 {
-  "name": "ArnoldCJS",
+  "name": "arnoldc.js",
   "version": "0.0.1",
   "description": "Compiler from ArnoldC to Javascript",
   "main": "main.js",
