@@ -14,7 +14,6 @@ function indentNode(level) {
 }
 
 function PrintExpression (line, column, value) {
-	this.type = 'PrintExpression';
   this.line = line;
   this.column = column;
 	this.value = value;
@@ -28,7 +27,6 @@ PrintExpression.prototype.compile = function(indent, fileName) {
 };
 
 function IntDeclarationExpression (line, column, name, value) {
-	this.type = 'IntDeclarationExpression';
 	this.name = name;
 	this.value = value;
   this.line = line;
@@ -38,14 +36,13 @@ function IntDeclarationExpression (line, column, name, value) {
 IntDeclarationExpression.prototype.compile = function(indent, fileName) {
   var node = new SourceNode(this.line, this.column, fileName, '');
   node.add(indentNode(indent));
-  var val = this.value.compile ? this.value.compile() : this.value;
+  var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
   node.add('var ' + this.name + ' = ');
   node.add(val);
   return node.add(';\n');
 };
 
 function AssignementExpression (name, initialValue, operations) {
-	this.type = 'AssignementExpression';
 	this.name = name;
 	this.initialValue = initialValue;
 	this.operations = operations;
@@ -70,7 +67,6 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 };
 
 function IfExpression (predicate, ifStatements, elseStatements) {
-	this.type = 'IfExpression';
 	this.predicate = predicate;
 	this.ifStatements = ifStatements;
 	this.elseStatements = elseStatements;
@@ -101,7 +97,6 @@ IfExpression.prototype.compile = function(indent, fileName) {
 };
 
 function WhileExpression (predicate, whileStatements) {
-	this.type = 'WhileExpression';
 	this.predicate = predicate;
 	this.whileStatements = whileStatements;
 }
@@ -122,7 +117,6 @@ WhileExpression.prototype.compile = function(indent, fileName) {
 
 
 function MethodDeclarationExpression (line, column, name, arguments, innerStatements) {
-	this.type = 'MethodDeclarationExpression';
 	this.name = name;
 	this.arguments = arguments;
 	this.innerStatements = innerStatements;
@@ -146,7 +140,6 @@ MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
 };
 
 function CallExpression (name, arguments) {
-	this.type = 'CallExpression';
 	this.name = name;
 	this.arguments = arguments;
 }
@@ -156,7 +149,6 @@ CallExpression.prototype.compile = function(indent, fileName) {
 };
 
 function ReturnExpression (value) {
-	this.type = 'ReturnExpression';
 	this.value = value;
 }
 
@@ -165,7 +157,6 @@ ReturnExpression.prototype.compile = function(indent, fileName) {
 };
 
 function False(line, column) {
-  this.type = 'FalseKeyword';
   this.line = line;
   this.column = column;
 }
@@ -175,7 +166,6 @@ False.prototype.compile = function(indent, fileName) {
 };
 
 function True(line, column) {
-  this.type = 'TrueKeyword';
   this.line = line;
   this.column = column;
 }
@@ -185,7 +175,6 @@ True.prototype.compile = function(indent, fileName) {
 };
 
 function AssignementFromCallExpression (name, functionCalled) {
-	this.type = 'AssignementFromCallExpression';
 	this.name = name;
 	this.functionCalled = functionCalled;
 }
@@ -195,7 +184,6 @@ AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
 };
 
 function MainExpression (statements, startLine, startColumn, endLine, endColumn) {
-	this.type = 'MainExpression';
 	this.statements = statements;
   this.line = startLine;
   this.column = startColumn;
