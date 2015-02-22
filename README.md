@@ -1,6 +1,6 @@
-# arnoldc-to-js
+# arnoldc.js
 
-arnoldc-to-js is a compiler from ArnoldC language to Javascript, with support for source maps.
+arnoldc.js is a compiler from ArnoldC language to Javascript, with support for source maps.
 
 You can read about the original project here : https://github.com/lhartikk/ArnoldC
 
@@ -10,10 +10,10 @@ Install: `npm install arnoldc.js --global`
 
 Run: `arnoldc.js {{file.arnoldc}}`
 
-It will output two files:
+It will produce two files:
 
-* Compiled javascript: `PATH_TO_YOUR_FILE.arnoldc.js`
-* Source Map javascript: `PATH_TO_YOUR_FILE.arnoldc.js.map`
+* Compiled javascript: `file.arnoldc.js`
+* Source Map javascript: `file.arnoldc.js.map`
 
 The source map contents is inlined into the map using `sourcesContent`, so you don't need to host your .arnoldc files.
 
