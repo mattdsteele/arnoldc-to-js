@@ -62,7 +62,6 @@ function AssignementExpression (line, column, name, initialValue, operations) {
 }
 AssignementExpression.prototype = Object.create(AstNode.prototype);
 AssignementExpression.prototype.compile = function(indent, fileName) {
-  console.log('yessss', this.name, this.operations);
   var node = this._sn(indent, fileName, 'var ' + this.name + ' = (');
 
 	if (this.operations && this.operations.length > 0) {
