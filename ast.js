@@ -31,11 +31,13 @@ function WhileExpression (predicate, whileStatements) {
 	this.whileStatements = whileStatements;
 }
 
-function MethodDeclarationExpression (name, arguments, innerStatements) {
+function MethodDeclarationExpression (line, column, name, arguments, innerStatements) {
 	this.type = 'MethodDeclarationExpression';
 	this.name = name;
 	this.arguments = arguments;
 	this.innerStatements = innerStatements;
+  this.line = line;
+  this.column = column;
 }
 
 function CallExpression (name, arguments) {

@@ -64,7 +64,7 @@ methods
 
 method
 	: METHOD_DECLARATION VARIABLE arguments_declared non_void statements END_METHOD_DECLARATION
-		{ $$ = new yy.MethodDeclarationExpression($2, $3, $5); }
+		{ $$ = new yy.MethodDeclarationExpression(@1.first_line, @1.first_column, $2, $3, $5); }
 	;
 
 arguments_declared

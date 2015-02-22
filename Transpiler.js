@@ -51,7 +51,6 @@ function HandleNode (node, indent, fileName) {
 }
 
 function PrintHandler (node, indent, fileName) {
-  console.log('print handler', node);
   var printNode = indentNode(indent);
 	var blob = 'console.log( '+ node.value + ' );\n';
   printNode.add(new SourceNode(node.line, node.column, fileName, blob));
@@ -80,11 +79,11 @@ function AssignementExpressionHandler (node, indent) {
 	return code;
 }
 
-function IfExpressionHandler (node, indent) {
+function IfExpressionHandler (node, indent, fileName) {
 	var code = getIndentStr(indent) + 'if ('+ node.predicate + ') { \n';
 
 	code += node.ifStatements.map(function (node) {
-		return HandleNode(node, indent + 1);
+		return HandleNode(node, indent + 1, fileName);
 	}).reduce(function (block, line) {
 		return block + line;
 	}, '');
@@ -94,7 +93,7 @@ function IfExpressionHandler (node, indent) {
 	if (node.elseStatements && node.elseStatements.length > 0) {
 		code += getIndentStr(indent) + 'else { \n';
 		code += node.elseStatements.map(function (node) {
-			return HandleNode(node, indent+1);
+			return HandleNode(node, indent+1, fileName);
 		}).reduce(function (block, line) {
 			return block + line;
 		}, '');
@@ -104,11 +103,11 @@ function IfExpressionHandler (node, indent) {
 	return code;
 }
 
-function WhileExpressionHandler (node, indent) {
+function WhileExpressionHandler (node, indent, fileName) {
 	var code = getIndentStr(indent) + 'while (' + node.predicate + ') {\n';
 
 	code += node.whileStatements.map(function (node) {
-		return HandleNode(node, indent + 1);
+		return HandleNode(node, indent + 1, fileName);
 	}).reduce(function (block, line) {
 		return block + line;
 	}, '');
@@ -118,18 +117,20 @@ function WhileExpressionHandler (node, indent) {
 	return code;
 }
 
-function MethodDeclarationExpressionHandler (node, indent) {
+function MethodDeclarationExpressionHandler (node, indent, fileName) {
+  var mainNode = new SourceNode(node.line, node.column, fileName, '');
 	var code = getIndentStr(indent) + 'function ' + node.name + ' ('+ node.arguments.join(', ') +') {\n';
 
 	code += node.innerStatements.map(function (node) {
-		return HandleNode(node, indent + 1);
+		return HandleNode(node, indent + 1, fileName);
 	}).reduce(function (block, line) {
 		return block + line;
 	}, '');
 
 	code += getIndentStr(indent) + '}\n';
+  mainNode.add(code);
 
-	return code;
+	return mainNode;
 }
 
 function CallExpressionHandler (node, indent) {
@@ -140,36 +141,35 @@ function ReturnExpressionHandler (node, indent) {
 	return getIndentStr(indent) + 'return ' + node.value + ';\n';
 }
 
-function AssignementFromCallExpressionHandler (node, indent) {
-	return getIndentStr(indent) + 'var ' + node.name + ' = ' + HandleNode(node.functionCalled);
+function AssignementFromCallExpressionHandler (node, indent, fileName) {
+	return getIndentStr(indent) + 'var ' + node.name + ' = ' + HandleNode(node.functionCalled, 0, fileName);
 }
 
 function MainExpressionHandler (node, indent, fileName) {
 	var startCode = getIndentStr(indent) + '(function () {\n';
-  var mainNode = new sourceMap.SourceNode(node.line, node.column, fileName, startCode);
+  var mainNode = new SourceNode(node.line, node.column, fileName, startCode);
 
 	var children = node.statements;
 
 	children.forEach(function (child) {
-    console.log('adding node', child);
 		mainNode.add(HandleNode(child, indent + 1, fileName));
 	});
 
   var endCode = getIndentStr(indent) + '}());\n';
-  mainNode.add(new sourceMap.SourceNode(node.endLine, node.endColumn, fileName, endCode));
+  mainNode.add(new SourceNode(node.endLine, node.endColumn, fileName, endCode));
 
 	return mainNode;
 }
 
 module.exports.withSourceMaps = function(nodes, fileName) {
-  var preamble = new sourceMap.SourceNode(null, null, null, '')
+  var preamble = new SourceNode(null, null, null, '')
     .add('(function() {\n "use strict";\n');
 
   var codes = nodes.forEach(function(expr) {
     preamble.add(HandleNode(expr, 1, fileName));
   });
 
-  var postscript = new sourceMap.SourceNode(null, null, null, '')
+  var postscript = new SourceNode(null, null, null, '')
     .add('}());');
 
   preamble.add(postscript);
