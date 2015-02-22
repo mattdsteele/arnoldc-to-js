@@ -1,25 +1,25 @@
 # arnoldc-to-js
 
-arnoldc-to-js is a compiler from ArnoldC language to Javascript.
+arnoldc-to-js is a compiler from ArnoldC language to Javascript, with support for source maps.
 
 You can read about the original project here : https://github.com/lhartikk/ArnoldC
 
 ## How to use it
 
-Just use the command ```node main PATH_TO_YOUR_FILE.arnoldc``` and it will output a javascript file next to the original file.
+Just use the command ```node main PATH_TO_YOUR_FILE.arnoldc``` and it will output two files:
 
-Then you can execute your generated file with NodeJS like a normal file.
+* Compiled javascript: `PATH_TO_YOUR_FILE.arnoldc.js`
+* Source Map javascript: `PATH_TO_YOUR_FILE.arnoldc.js.map`
+
+The source map contents is inlined into the map using `sourcesContent`, so you don't need to host your .arnoldc files.
 
 ## How does it works ?
 
 It uses [Jison](http://zaach.github.io/jison/) to parse the file and to produce a simple AST of the code.
 
-Then, it uses functions defined in the file Transpiler.js to produce the corresponding Javascript code.
+Then, it uses functions defined in the file `Transpiler.js` and `ast.js` to produce the corresponding Javascript code.
 
-
-If you want to change the grammar rules in arnoldc.jison, don't forget to generate the parser afterwards !
-
-First, you need to have Jison installed globally (by running the command ```npm install -g jison```) and then to produce the parser : ```jison arnoldc.jison```
+Source maps provided by Mozilla's [source-maps](https://github.com/mozilla/source-map) library.
 
 ## Not supported yet
 
