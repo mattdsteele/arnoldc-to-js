@@ -96,7 +96,7 @@ statement
 		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| PRINT string
 		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
-	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
+	| DECLARE_INT variable SET_INITIAL_VALUE integer
 		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
 		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, []);}
@@ -137,10 +137,14 @@ else
 integer
 	: NUMBER
 		{ $$ = new yy.IntegerLike(@1.first_line, @1.first_column, $1); }
-	| VARIABLE
-		{ $$ = new yy.IntegerLike(@1.first_line, @1.first_column, $1); }
+	| variable
 	| boolean
 	;
+
+variable
+  : VARIABLE
+		{ $$ = new yy.IntegerLike(@1.first_line, @1.first_column, $1); }
+  ;
 
 boolean
 	: FALSE

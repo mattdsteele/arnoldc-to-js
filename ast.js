@@ -50,8 +50,10 @@ IntDeclarationExpression.prototype = Object.create(AstNode.prototype);
 IntDeclarationExpression.prototype.compile = function(indent, fileName) {
   var node = this._sn(indent, fileName, '');
   var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
-  node.add('var ' + this.name + ' = ');
-  node.add(val);
+  node.add('var ')
+    .add(this.name.compile(indent, fileName))
+    .add(' = ')
+    .add(val);
   return node.add(';\n');
 };
 
