@@ -1,6 +1,8 @@
 var sourceMap = require('source-map'),
   SourceNode = sourceMap.SourceNode;
 
+//Helper functions
+
 function getIndentStr (level) {
 	var indentStr = '';
 	for (var i = 0; i < level; i++) {
@@ -13,35 +15,46 @@ function indentNode(level) {
   return new SourceNode(null, null, null, getIndentStr(level));
 }
 
-function PrintExpression (line, column, value) {
+//Base 'class'
+
+var AstNode = function(line, column) {
   this.line = line;
   this.column = column;
+};
+
+AstNode.prototype._sn = function(indent, fileName, chunk) {
+  return new SourceNode(this.line, this.column, fileName, '')
+    .add(indentNode(indent))
+    .add(chunk)
+};
+
+//Keywords/Expressions
+
+function PrintExpression (line, column, value) {
+  AstNode.call(this, line, column);
 	this.value = value;
 }
-
+PrintExpression.prototype = Object.create(AstNode.prototype);
 PrintExpression.prototype.compile = function(indent, fileName) {
-  var printNode = indentNode(indent);
 	var blob = 'console.log( '+ this.value + ' );\n';
-  printNode.add(new SourceNode(this.line, this.column, fileName, blob));
-  return printNode;
+  return this._sn(indent, fileName, blob);
 };
 
 function IntDeclarationExpression (line, column, name, value) {
+  AstNode.call(this, line, column);
 	this.name = name;
 	this.value = value;
-  this.line = line;
-  this.column = column;
 }
-
+IntDeclarationExpression.prototype = Object.create(AstNode.prototype);
 IntDeclarationExpression.prototype.compile = function(indent, fileName) {
-  var node = new SourceNode(this.line, this.column, fileName, '');
-  node.add(indentNode(indent));
+  var node = this._sn(indent, fileName, '');
   var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
   node.add('var ' + this.name + ' = ');
   node.add(val);
   return node.add(';\n');
 };
 
+//TODO nodeify this
 function AssignementExpression (name, initialValue, operations) {
 	this.name = name;
 	this.initialValue = initialValue;
@@ -66,34 +79,35 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 	return code;
 };
 
-function IfExpression (predicate, ifStatements, elseStatements) {
+function IfExpression (line, column, predicate, ifStatements, elseStatements) {
+  AstNode.call(this, line, column);
 	this.predicate = predicate;
 	this.ifStatements = ifStatements;
 	this.elseStatements = elseStatements;
 }
-
+IfExpression.prototype = Object.create(AstNode.prototype);
 IfExpression.prototype.compile = function(indent, fileName) {
-	var code = getIndentStr(indent) + 'if ('+ this.predicate + ') { \n';
+  var expr = this._sn(indent, fileName, 'if (' + this.predicate + ') { \n');
+	//var code = getIndentStr(indent) + 'if ('+ this.predicate + ') { \n';
 
-	code += this.ifStatements.map(function (node) {
+	expr.add(this.ifStatements.map(function (node) {
 		return node.compile(indent + 1, fileName);
 	}).reduce(function (block, line) {
 		return block + line;
-	}, '');
+	}, ''));
 
-	code += getIndentStr(indent) + '} \n';
+	expr.add(getIndentStr(indent) + '} \n');
 
 	if (this.elseStatements && this.elseStatements.length > 0) {
-		code += getIndentStr(indent) + 'else { \n';
-		code += this.elseStatements.map(function (node) {
+		expr.add(getIndentStr(indent) + 'else { \n')
+    .add(this.elseStatements.map(function (node) {
 			return node.compile(indent+1, fileName);
 		}).reduce(function (block, line) {
 			return block + line;
-		}, '');
-		code += getIndentStr(indent) + '}\n';
+		}, ''));
+		expr.add(getIndentStr(indent) + '}\n');
 	}
-
-	return code;
+	return expr;
 };
 
 function WhileExpression (predicate, whileStatements) {
@@ -117,26 +131,21 @@ WhileExpression.prototype.compile = function(indent, fileName) {
 
 
 function MethodDeclarationExpression (line, column, name, arguments, innerStatements) {
+  AstNode.call(this, line, column);
 	this.name = name;
 	this.arguments = arguments;
 	this.innerStatements = innerStatements;
-  this.line = line;
-  this.column = column;
 }
 
+MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
 MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
-  var mainNode = new SourceNode(this.line, this.column, fileName, '');
-  mainNode.add(indentNode(indent));
-	var code = 'function ' + this.name + ' ('+ this.arguments.join(', ') +') {\n';
-  mainNode.add(code);
-  mainNode.add(this.innerStatements.map(function(statement) {
-    return statement.compile(indent + 1, fileName);
-  }));
-
-  mainNode.add(indentNode(indent));
-  mainNode.add('}\n');
-
-	return mainNode;
+  return mainNode = this._sn(indent, fileName, '')
+    .add('function ' + this.name + ' ('+ this.arguments.join(', ') +') {\n')
+    .add(this.innerStatements.map(function(statement) {
+      return statement.compile(indent + 1, fileName);
+    }))
+    .add(indentNode(indent))
+    .add('}\n');
 };
 
 function CallExpression (name, arguments) {
@@ -156,22 +165,13 @@ ReturnExpression.prototype.compile = function(indent, fileName) {
 	return getIndentStr(indent) + 'return ' + this.value + ';\n';
 };
 
-function False(line, column) {
-  this.line = line;
-  this.column = column;
+function Bool(line, column, boolVal) {
+  AstNode.call(this, line, column);
+  this.boolVal = boolVal;
 }
-
-False.prototype.compile = function(indent, fileName) {
-  return new SourceNode(this.line, this.column, fileName, 'false');
-};
-
-function True(line, column) {
-  this.line = line;
-  this.column = column;
-}
-
-True.prototype.compile = function(indent, fileName) {
-  return new SourceNode(this.line, this.column, fileName, 'true');
+Bool.prototype = Object.create(AstNode.prototype);
+Bool.prototype.compile = function(indent, fileName) {
+  return this._sn(indent, fileName, this.boolVal);
 };
 
 function AssignementFromCallExpression (name, functionCalled) {
@@ -183,28 +183,20 @@ AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
 	return getIndentStr(indent) + 'var ' + this.name + ' = ' + this.functionCalled.compile(0, fileName);
 };
 
-function MainExpression (statements, startLine, startColumn, endLine, endColumn) {
+function MainExpression (statements, line, column, endLine, endColumn) {
+  AstNode.call(this, line, column);
 	this.statements = statements;
-  this.line = startLine;
-  this.column = startColumn;
   this.endLine = endLine;
   this.endColumn = endColumn;
 }
-
+MainExpression.prototype = Object.create(AstNode.prototype);
 MainExpression.prototype.compile = function(indent, fileName) {
-	var startCode = getIndentStr(indent) + '(function () {\n';
-  var mainNode = new SourceNode(this.line, this.column, fileName, startCode);
-
-	var children = this.statements;
-
-	children.forEach(function (child) {
-		mainNode.add(child.compile(indent + 1, fileName));
-	});
-
-  var endCode = getIndentStr(indent) + '}());\n';
-  mainNode.add(new SourceNode(this.endLine, this.endColumn, fileName, endCode));
-
-	return mainNode;
+  return this._sn(indent, fileName, '(function() {\n')
+    .add(this.statements.map(function (child) {
+      return child.compile(indent + 1, fileName);
+    }))
+    .add(indentNode(indent))
+    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}());\n'));
 };
 
 var yy = {
@@ -217,8 +209,7 @@ var yy = {
   CallExpression: CallExpression,
   ReturnExpression: ReturnExpression,
   AssignementFromCallExpression: AssignementFromCallExpression,
-  False: False,
-  True: True,
+  Bool: Bool,
   MainExpression: MainExpression
 };
 
