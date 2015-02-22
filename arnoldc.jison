@@ -76,7 +76,7 @@ arguments_declared
 
 argument_declared
 	: ARG_DECLARATION VARIABLE
-		{ $$ = $2; }
+    { $$ = new yy.ArgumentDeclarationExpression(@1.first_line, @1.first_column, $2); }
 	;
 
 non_void

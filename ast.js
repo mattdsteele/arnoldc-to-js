@@ -147,13 +147,24 @@ function MethodDeclarationExpression (line, column, name, arguments, innerStatem
 
 MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
 MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, '')
-    .add('function ' + this.name + ' ('+ this.arguments.join(', ') +') {\n')
+  var node = this._sn(indent, fileName, '')
+    .add('function ' + this.name + ' (');
+
+
+    this.arguments.forEach(function(argument, i, self) {
+      node.add(argument.compile(0, fileName));
+      if (i != self.length) {
+        node.add(', ');
+      }
+    });
+
+    node.add(') {\n')
     .add(this.innerStatements.map(function(statement) {
       return statement.compile(indent + 1, fileName);
     }))
     .add(indentNode(indent))
     .add('}\n');
+    return node;
 };
 
 function CallExpression (line, column, name, arguments) {
@@ -199,6 +210,16 @@ AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
     .add(this.functionCalled.compile(0, fileName));
 };
 
+function ArgumentDeclarationExpression(line, column, variable) {
+  AstNode.call(this, line, column);
+  this.variable = variable;
+}
+ArgumentDeclarationExpression.prototype = Object.create(AstNode.prototype);
+ArgumentDeclarationExpression.prototype.compile = function(indent, fileName) {
+  return this._sn(indent, fileName, '')
+    .add(this.variable);
+};
+
 function MainExpression (statements, line, column, endLine, endColumn) {
   AstNode.call(this, line, column);
 	this.statements = statements;
@@ -226,6 +247,7 @@ var yy = {
   CallExpression: CallExpression,
   ReturnExpression: ReturnExpression,
   AssignementFromCallExpression: AssignementFromCallExpression,
+  ArgumentDeclarationExpression: ArgumentDeclarationExpression,
   Bool: Bool,
   MainExpression: MainExpression
 };
