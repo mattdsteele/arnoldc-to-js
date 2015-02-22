@@ -147,7 +147,7 @@ function MethodDeclarationExpression (line, column, name, arguments, innerStatem
 
 MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
 MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
-  return mainNode = this._sn(indent, fileName, '')
+  return this._sn(indent, fileName, '')
     .add('function ' + this.name + ' ('+ this.arguments.join(', ') +') {\n')
     .add(this.innerStatements.map(function(statement) {
       return statement.compile(indent + 1, fileName);
@@ -156,13 +156,15 @@ MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
     .add('}\n');
 };
 
-function CallExpression (name, arguments) {
+function CallExpression (line, column, name, arguments) {
+  AstNode.call(this, line, column);
 	this.name = name;
 	this.arguments = arguments;
 }
-
+CallExpression.prototype = Object.create(AstNode.prototype);
 CallExpression.prototype.compile = function(indent, fileName) {
-	return getIndentStr(indent) + this.name + '(' + this.arguments.join(', ') + ');\n';
+  return this._sn(indent, fileName, '')
+    .add(this.name + '(' + this.arguments.join(', ') + ');\n');
 };
 
 function ReturnExpression (value) {
@@ -182,13 +184,16 @@ Bool.prototype.compile = function(indent, fileName) {
   return this._sn(indent, fileName, this.boolVal);
 };
 
-function AssignementFromCallExpression (name, functionCalled) {
+function AssignementFromCallExpression (line, column, name, functionCalled) {
+  AstNode.call(this, line, column);
 	this.name = name;
 	this.functionCalled = functionCalled;
 }
-
+AssignementFromCallExpression.prototype = Object.create(AstNode.prototype);
 AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
-	return getIndentStr(indent) + 'var ' + this.name + ' = ' + this.functionCalled.compile(0, fileName);
+  return this._sn(indent, fileName, '')
+    .add('var ' + this.name + ' = ')
+    .add(this.functionCalled.compile(0, fileName));
 };
 
 function MainExpression (statements, line, column, endLine, endColumn) {

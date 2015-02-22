@@ -112,14 +112,14 @@ statement
 	| method_call
 		{ $$ = $1; }
 	| ASSIGN_FROM_CALL VARIABLE method_call
-		{ $$ = new yy.AssignementFromCallExpression($2, $3); }
+		{ $$ = new yy.AssignementFromCallExpression(@1.first_line, @1.first_column, $2, $3); }
 	| RETURN integer
 		{ $$ = new yy.ReturnExpression($2); }
 	;
 
 method_call
 	: CALL_METHOD VARIABLE arguments
-		{ $$ = new yy.CallExpression($2, $3); }
+		{ $$ = new yy.CallExpression(@1.first_line, @1.first_column, $2, $3); }
 	;
 
 arguments
