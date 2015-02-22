@@ -120,21 +120,21 @@ ElseNode.prototype.compile = function(indent, fileName) {
   return this._sn(indent, fileName, 'else { \n');
 };
 
-function WhileExpression (line, column, predicate, whileStatements) {
+function WhileExpression (line, column, predicate, whileStatements, endLine, endColumn) {
   AstNode.call(this, line, column);
 	this.predicate = predicate;
 	this.whileStatements = whileStatements;
+  this.endLine = endLine;
+  this.endColumn = endColumn;
 }
 WhileExpression.prototype = Object.create(AstNode.prototype);
 WhileExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, 'while (' + this.predicate + ') {\n');
-	node.add(this.whileStatements.map(function (statement) {
-		return statement.compile(indent + 1, fileName);
-  }));
-
-	node.add(getIndentStr(indent) + '}\n');
-
-	return node;
+  return this._sn(indent, fileName, 'while (' + this.predicate + ') {\n')
+    .add(this.whileStatements.map(function (statement) {
+      return statement.compile(indent + 1, fileName);
+    }))
+    .add(indentNode(indent))
+    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
 };
 
 
@@ -167,12 +167,15 @@ CallExpression.prototype.compile = function(indent, fileName) {
     .add(this.name + '(' + this.arguments.join(', ') + ');\n');
 };
 
-function ReturnExpression (value) {
+function ReturnExpression (line, column, value) {
+  AstNode.call(this, line, column);
 	this.value = value;
 }
-
+ReturnExpression.prototype = Object.create(AstNode.prototype);
 ReturnExpression.prototype.compile = function(indent, fileName) {
-	return getIndentStr(indent) + 'return ' + this.value + ';\n';
+  return this._sn(indent, fileName, 'return ')
+    .add(this.value)
+    .add(';\n');
 };
 
 function Bool(line, column, boolVal) {

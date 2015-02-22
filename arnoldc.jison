@@ -108,13 +108,13 @@ statement
 	| IF integer statements else statements END_IF
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5, @6.first_line, @6.first_column, $4); }
 	| WHILE VARIABLE statements END_WHILE
-		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3); }
+		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3, @4.first_line, @4.first_column); }
 	| method_call
 		{ $$ = $1; }
 	| ASSIGN_FROM_CALL VARIABLE method_call
 		{ $$ = new yy.AssignementFromCallExpression(@1.first_line, @1.first_column, $2, $3); }
 	| RETURN integer
-		{ $$ = new yy.ReturnExpression($2); }
+		{ $$ = new yy.ReturnExpression(@1.first_line, @1.first_column, $2); }
 	;
 
 method_call
