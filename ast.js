@@ -36,8 +36,9 @@ function PrintExpression (line, column, value) {
 }
 PrintExpression.prototype = Object.create(AstNode.prototype);
 PrintExpression.prototype.compile = function(indent, fileName) {
-	var blob = 'console.log( '+ this.value + ' );\n';
-  return this._sn(indent, fileName, blob);
+  return this._sn(indent, fileName, 'console.log( ')
+    .add(this.value.compile(indent, fileName))
+    .add(' );\n');
 };
 
 function IntDeclarationExpression (line, column, name, value) {
@@ -65,9 +66,7 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
   var node = this._sn(indent, fileName, 'var ' + this.name + ' = (');
 
 	if (this.operations && this.operations.length > 0) {
-		var operationsStr = this.initialValue;
-
-    var opsNodes = [this.initialValue]
+    var opsNodes = [this.initialValue.compile(indent, fileName)]
 		this.operations.forEach(function (operation) {
       opsNodes.splice(0, 0, '(');
       opsNodes.push(operation.compile(indent, fileName));
@@ -76,7 +75,8 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
     node.add(opsNodes)
       .add(');\n');
 	} else {
-		node.add(this.initialValue + ');\n');
+		node.add(this.initialValue.compile(indent, fileName))
+      .add(');\n');
 	}
   node.add(indentNode(indent))
     .add('if(typeof(' + this.name + ') === "boolean") { ' + this.name + ' = ' + this.name + ' ? 1 : 0; }\n')
@@ -97,7 +97,9 @@ function IfExpression (line, column, predicate, ifStatements, elseStatements, en
 }
 IfExpression.prototype = Object.create(AstNode.prototype);
 IfExpression.prototype.compile = function(indent, fileName) {
-  var expr = this._sn(indent, fileName, 'if (' + this.predicate + ') { \n');
+  var expr = this._sn(indent, fileName, 'if (')
+    .add(this.predicate.compile(indent, fileName))
+    .add(') { \n');
 
 	expr.add(this.ifStatements.map(function (node) {
 		return node.compile(indent + 1, fileName);
@@ -158,7 +160,7 @@ MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
 
     this.arguments.forEach(function(argument, i, self) {
       node.add(argument.compile(0, fileName));
-      if (i != self.length) {
+      if (i != self.length - 1) {
         node.add(', ');
       }
     });
@@ -178,8 +180,18 @@ function CallExpression (line, column, name, arguments) {
 }
 CallExpression.prototype = Object.create(AstNode.prototype);
 CallExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, '')
-    .add(this.name + '(' + this.arguments.join(', ') + ');\n');
+  var node = this._sn(indent, fileName, '')
+    .add(this.name)
+    .add('(');
+
+  this.arguments.forEach(function(argument, i, self) {
+    node.add(argument.compile(indent, fileName));
+    if (i != self.length - 1) {
+      node.add(', ');
+    }
+  });
+  node.add(');\n');
+  return node;
 };
 
 function ReturnExpression (line, column, value) {
@@ -189,17 +201,17 @@ function ReturnExpression (line, column, value) {
 ReturnExpression.prototype = Object.create(AstNode.prototype);
 ReturnExpression.prototype.compile = function(indent, fileName) {
   return this._sn(indent, fileName, 'return ')
-    .add(this.value)
+    .add(this.value.compile(indent, fileName))
     .add(';\n');
 };
 
-function Bool(line, column, boolVal) {
+function IntegerLike(line, column, boolVal) {
   AstNode.call(this, line, column);
   this.boolVal = boolVal;
 }
-Bool.prototype = Object.create(AstNode.prototype);
-Bool.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, this.boolVal);
+IntegerLike.prototype = Object.create(AstNode.prototype);
+IntegerLike.prototype.compile = function(indent, fileName) {
+  return this._sn(0, fileName, this.boolVal);
 };
 
 function Operation(line, column, operation, variable) {
@@ -211,7 +223,7 @@ Operation.prototype = Object.create(AstNode.prototype);
 Operation.prototype.compile = function(indent, fileName) {
   return this._sn(0, fileName, '')
     .add(this.operation)
-    .add(this.variable);
+    .add(this.variable.compile(indent, fileName));
 };
 
 function AssignementFromCallExpression (line, column, name, functionCalled) {
@@ -264,7 +276,7 @@ var yy = {
   ReturnExpression: ReturnExpression,
   AssignementFromCallExpression: AssignementFromCallExpression,
   ArgumentDeclarationExpression: ArgumentDeclarationExpression,
-  Bool: Bool,
+  IntegerLike: IntegerLike,
   Operation: Operation,
   MainExpression: MainExpression
 };
