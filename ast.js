@@ -148,7 +148,9 @@ function WhileExpression (line, column, predicate, whileStatements, endLine, end
 }
 WhileExpression.prototype = Object.create(AstNode.prototype);
 WhileExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'while (' + this.predicate + ') {\n')
+  return this._sn(indent, fileName, 'while (')
+    .add(this.predicate.compile(indent, fileName))
+    .add(') {\n')
     .add(this.whileStatements.map(function (statement) {
       return statement.compile(indent + 1, fileName);
     }))
@@ -168,8 +170,9 @@ function MethodDeclarationExpression (line, column, name, arguments, innerStatem
 
 MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
 MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, '')
-    .add('function ' + this.name + ' (');
+  var node = this._sn(indent, fileName, 'function ')
+    .add(this.name.compile(indent, fileName))
+    .add(' (');
 
 
     this.arguments.forEach(function(argument, i, self) {
@@ -195,7 +198,7 @@ function CallExpression (line, column, name, arguments) {
 CallExpression.prototype = Object.create(AstNode.prototype);
 CallExpression.prototype.compile = function(indent, fileName) {
   var node = this._sn(indent, fileName, '')
-    .add(this.name)
+    .add(this.name.compile(indent, fileName))
     .add('(');
 
   this.arguments.forEach(function(argument, i, self) {
@@ -247,8 +250,9 @@ function AssignementFromCallExpression (line, column, name, functionCalled) {
 }
 AssignementFromCallExpression.prototype = Object.create(AstNode.prototype);
 AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, '')
-    .add('var ' + this.name + ' = ')
+  return this._sn(indent, fileName, 'var ')
+    .add(this.name.compile(indent, fileName))
+    .add(' = ')
     .add(this.functionCalled.compile(0, fileName));
 };
 
@@ -259,7 +263,7 @@ function ArgumentDeclarationExpression(line, column, variable) {
 ArgumentDeclarationExpression.prototype = Object.create(AstNode.prototype);
 ArgumentDeclarationExpression.prototype.compile = function(indent, fileName) {
   return this._sn(indent, fileName, '')
-    .add(this.variable);
+    .add(this.variable.compile(indent, fileName));
 };
 
 function MainExpression (statements, line, column, endLine, endColumn) {

@@ -63,7 +63,7 @@ methods
 	;
 
 method
-	: METHOD_DECLARATION VARIABLE arguments_declared non_void statements END_METHOD_DECLARATION
+	: METHOD_DECLARATION variable arguments_declared non_void statements END_METHOD_DECLARATION
 		{ $$ = new yy.MethodDeclarationExpression(@1.first_line, @1.first_column, $2, $3, $5, @6.first_line, @6.first_column); }
 	;
 
@@ -75,7 +75,7 @@ arguments_declared
 	;
 
 argument_declared
-	: ARG_DECLARATION VARIABLE
+	: ARG_DECLARATION variable
     { $$ = new yy.ArgumentDeclarationExpression(@1.first_line, @1.first_column, $2); }
 	;
 
@@ -107,18 +107,18 @@ statement
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, [], @4.first_line, @4.first_column); }
 	| IF integer statements else statements END_IF
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5, @6.first_line, @6.first_column, $4); }
-	| WHILE VARIABLE statements END_WHILE
+	| WHILE variable statements END_WHILE
 		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3, @4.first_line, @4.first_column); }
 	| method_call
 		{ $$ = $1; }
-	| ASSIGN_FROM_CALL VARIABLE method_call
+	| ASSIGN_FROM_CALL variable method_call
 		{ $$ = new yy.AssignementFromCallExpression(@1.first_line, @1.first_column, $2, $3); }
 	| RETURN integer
 		{ $$ = new yy.ReturnExpression(@1.first_line, @1.first_column, $2); }
 	;
 
 method_call
-	: CALL_METHOD VARIABLE arguments
+	: CALL_METHOD variable arguments
 		{ $$ = new yy.CallExpression(@1.first_line, @1.first_column, $2, $3); }
 	;
 
