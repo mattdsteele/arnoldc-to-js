@@ -104,9 +104,9 @@ statement
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
 		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, $5);}
 	| IF integer statements END_IF
-		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3); }
-	| IF integer statements ELSE statements END_IF
-		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5); }
+		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, [], @4.first_line, @4.first_column); }
+	| IF integer statements else statements END_IF
+		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5, @6.first_line, @6.first_column, $4); }
 	| WHILE VARIABLE statements END_WHILE
 		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3); }
 	| method_call
@@ -128,6 +128,11 @@ arguments
 	|
 		{ $$ = []; }
 	;
+
+else
+  : ELSE
+    { $$ = new yy.ElseNode(@1.first_line, @1.first_column); }
+  ;
 
 integer
 	: NUMBER

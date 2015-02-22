@@ -54,7 +54,6 @@ IntDeclarationExpression.prototype.compile = function(indent, fileName) {
   return node.add(';\n');
 };
 
-//TODO nodeify this
 function AssignementExpression (line, column, name, initialValue, operations) {
   AstNode.call(this, line, column);
 	this.name = name;
@@ -63,7 +62,8 @@ function AssignementExpression (line, column, name, initialValue, operations) {
 }
 AssignementExpression.prototype = Object.create(AstNode.prototype);
 AssignementExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, 'var ' + this.name + ' = parseInt(');
+  console.log('yessss', this.name, this.operations);
+  var node = this._sn(indent, fileName, 'var ' + this.name + ' = (');
 
 	if (this.operations && this.operations.length > 0) {
 		var operationsStr = this.initialValue;
@@ -76,35 +76,47 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 	} else {
 		node.add(this.initialValue + ');\n');
 	}
+  node.add(indentNode(indent))
+    .add('if(typeof(' + this.name + ') === "boolean") { ' + this.name + ' = ' + this.name + ' ? 1 : 0; }\n');
 
 	return node;
 };
 
-function IfExpression (line, column, predicate, ifStatements, elseStatements) {
+function IfExpression (line, column, predicate, ifStatements, elseStatements, endIfLine, endIfColumn, elseNode) {
   AstNode.call(this, line, column);
 	this.predicate = predicate;
 	this.ifStatements = ifStatements;
 	this.elseStatements = elseStatements;
+  this.endIfLine = endIfLine;
+  this.endIfColumn = endIfColumn;
+  this.elseNode = elseNode;
 }
 IfExpression.prototype = Object.create(AstNode.prototype);
 IfExpression.prototype.compile = function(indent, fileName) {
   var expr = this._sn(indent, fileName, 'if (' + this.predicate + ') { \n');
-	//var code = getIndentStr(indent) + 'if ('+ this.predicate + ') { \n';
 
 	expr.add(this.ifStatements.map(function (node) {
 		return node.compile(indent + 1, fileName);
   }));
 
-	expr.add(getIndentStr(indent) + '} \n');
-
 	if (this.elseStatements && this.elseStatements.length > 0) {
-		expr.add(getIndentStr(indent) + 'else { \n')
-    .add(this.elseStatements.map(function (node) {
-			return node.compile(indent+1, fileName);
-    }));
-		expr.add(getIndentStr(indent) + '}\n');
+    expr.add(indentNode(indent))
+      .add('}\n')
+      .add(this.elseNode.compile(indent, fileName))
+      .add(this.elseStatements.map(function (node) {
+        return node.compile(indent+1, fileName);
+      }));
 	}
-	return expr;
+  return expr.add(indentNode(indent))
+    .add(new SourceNode(this.endIfLine, this.endIfColumn, fileName, '}\n'));
+};
+
+function ElseNode(line, column) {
+  AstNode.call(this, line, column);
+}
+ElseNode.prototype = Object.create(AstNode.prototype);
+ElseNode.prototype.compile = function(indent, fileName) {
+  return this._sn(indent, fileName, 'else { \n');
 };
 
 function WhileExpression (line, column, predicate, whileStatements) {
@@ -199,6 +211,7 @@ var yy = {
   IntDeclarationExpression: IntDeclarationExpression,
   AssignementExpression: AssignementExpression,
   IfExpression: IfExpression,
+  ElseNode: ElseNode,
   WhileExpression: WhileExpression,
   MethodDeclarationExpression: MethodDeclarationExpression,
   CallExpression: CallExpression,

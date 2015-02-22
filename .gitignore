@@ -1,6 +1,7 @@
 # editor
 .idea/
 *.iml
+.DS_Store
 
 # node stuff
 node_modules/
