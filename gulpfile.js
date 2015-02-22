@@ -10,7 +10,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('lint', function() {
-  return gulp.src(['main.js', 'Transpiler.js', 'test/**.js'])
+  return gulp.src(['bin/**.js', 'lib/**.js', 'test/**.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
