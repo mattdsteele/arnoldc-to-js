@@ -7,10 +7,10 @@
   var assert = require('assert');
   var fileOptions = {encoding: 'utf-8'};
 
-  var Transpiler = require('../Transpiler');
+  var Transpiler = require('../lib/Transpiler');
   var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
   var parser = new jison.Parser(bnf);
-  parser.yy = require('../ast');
+  parser.yy = require('../lib/ast');
 
   var cwd = process.cwd();
 

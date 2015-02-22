@@ -1,11 +1,5 @@
-var jison = require('jison');
 var fs = require('fs');
-var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
-var parser = new jison.Parser(bnf);
-parser.yy = require('./ast');
-var util = require('util');
-var Transpiler = require('./Transpiler');
-var sourceMap = require('source-map');
+var Transpiler = require('../lib/Transpiler');
 
 if (process.argv[2]) {
 	var fileName = process.argv[2];
@@ -13,15 +7,13 @@ if (process.argv[2]) {
 	var ext = fileName.split('.');
 
 	if (ext.length > 0 && ext[ext.length -1] === 'arnoldc') {
-		var data = fs.readFileSync(fileName, 'utf-8');
-		var AST = parser.parse(data);
+    var mapping = Transpiler.transpile(fs.readFileSync(fileName, 'utf-8'), fileName);
 
     var jsFile = fileName + '.js',
       sourceMapName = jsFile + '.map';
 
-    var mapping = Transpiler.withSourceMaps(AST, fileName);
-    mapping.setSourceContent(fileName, data);
     var output = mapping.toStringWithSourceMap({ file: sourceMapName });
+    
     //add source map
     output.code += "\n//# sourceMappingURL=" + sourceMapName.replace(/^.*\//g, '');
     fs.writeFileSync(sourceMapName, output.map);
