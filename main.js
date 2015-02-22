@@ -23,7 +23,7 @@ if (process.argv[2]) {
     mapping.setSourceContent(fileName, data);
     var output = mapping.toStringWithSourceMap({ file: sourceMapName });
     //add source map
-    output.code += "\n//# sourceMappingURL=" + sourceMapName;
+    output.code += "\n//# sourceMappingURL=" + sourceMapName.replace(/^.*\//g, '');
     fs.writeFileSync(sourceMapName, output.map);
     fs.writeFileSync(jsFile, output.code);
 	} else {
