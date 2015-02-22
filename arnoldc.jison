@@ -97,7 +97,7 @@ statement
 	| PRINT STRING_LITTERAL
 		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| DECLARE_INT VARIABLE SET_INITIAL_VALUE integer
-		{ $$ = new yy.IntDeclarationExpression($2, $4); }
+		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
 	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
 		{ $$ = new yy.AssignementExpression($2, $4, []);}
 
@@ -137,9 +137,9 @@ integer
 
 boolean
 	: FALSE
-		{ $$ = false; }
+		{ $$ = new yy.False(@1.first_line, @1.first_column); }
 	| TRUE
-		{ $$ = true; }
+		{ $$ = new yy.True(@1.first_line, @1.first_column); }
 	;
 
 ops

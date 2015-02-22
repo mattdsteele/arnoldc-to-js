@@ -47,7 +47,21 @@ function HandleNode (node, indent, fileName) {
 		case 'AssignementFromCallExpression':
 			return AssignementFromCallExpressionHandler(node, indent, fileName);
 			break;
+    case 'TrueKeyword':
+      return TrueKeywordHandler(node, fileName);
+      break;
+    case 'FalseKeyword':
+      return FalseKeywordHandler(node, fileName);
+      break;
 	}
+}
+
+function TrueKeywordHandler(node, fileName) {
+  return new SourceNode(node.line, node.column, fileName, 'true');
+}
+
+function FalseKeywordHandler(node, fileName) {
+  return new SourceNode(node.line, node.column, fileName, 'false');
 }
 
 function PrintHandler (node, indent, fileName) {
@@ -57,8 +71,17 @@ function PrintHandler (node, indent, fileName) {
   return printNode;
 }
 
-function IntDeclarationHandler (node, indent) {
-	return getIndentStr(indent) + 'var '+ node.name + ' = ' + node.value + ';\n';
+function IntDeclarationHandler (node, indent, fileName) {
+  console.log('declaration int', node);
+  var declarationNode = indentNode(indent);
+  //HAAAACK
+  if (node.value.type = 'TrueKeyword') {
+    node.value = 'true';
+  } else if (node.value.type = 'FalseKeyword') {
+    node.value = 'false';
+  }
+  var code = 'var ' + node.name + ' = ' + node.value + '\n';
+  return declarationNode.add(new SourceNode(node.line, node.column, fileName, code));
 }
 
 function AssignementExpressionHandler (node, indent) {

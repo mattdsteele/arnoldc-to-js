@@ -5,10 +5,13 @@ function PrintExpression (line, column, value) {
 	this.value = value;
 }
 
-function IntDeclarationExpression (name, value) {
+function IntDeclarationExpression (line, column, name, value) {
 	this.type = 'IntDeclarationExpression';
 	this.name = name;
 	this.value = value;
+  this.line = line;
+  this.column = column;
+  console.log('delcaring int', line, column, name, value);
 }
 
 function AssignementExpression (name, initialValue, operations) {
@@ -51,6 +54,18 @@ function ReturnExpression (value) {
 	this.value = value;
 }
 
+function False(line, column) {
+  this.type = 'FalseKeyword';
+  this.line = line;
+  this.column = column;
+}
+
+function True(line, column) {
+  this.type = 'TrueKeyword';
+  this.line = line;
+  this.column = column;
+}
+
 function AssignementFromCallExpression (name, functionCalled) {
 	this.type = 'AssignementFromCallExpression';
 	this.name = name;
@@ -74,6 +89,8 @@ var yy = {
   CallExpression: CallExpression,
   ReturnExpression: ReturnExpression,
   AssignementFromCallExpression: AssignementFromCallExpression,
+  False: False,
+  True: True,
   MainExpression: MainExpression
 };
 
