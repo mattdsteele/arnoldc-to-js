@@ -7,8 +7,10 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js examples/hello_world.arnoldc"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "arnoldc.js": "./bin/main.js"
   },
   "repository": {
     "type": "git",
