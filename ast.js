@@ -65,7 +65,10 @@ function AssignementExpression (line, column, name, initialValue, operations) {
 }
 AssignementExpression.prototype = Object.create(AstNode.prototype);
 AssignementExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, 'var ' + this.name + ' = (');
+  var compiledName = this.name.compile(indent, fileName);
+  var node = this._sn(indent, fileName, 'var ')
+    .add(compiledName)
+    .add(' = (');
 
 	if (this.operations && this.operations.length > 0) {
     var opsNodes = [this.initialValue.compile(indent, fileName)]
@@ -81,9 +84,18 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
       .add(');\n');
 	}
   node.add(indentNode(indent))
-    .add('if(typeof(' + this.name + ') === "boolean") { ' + this.name + ' = ' + this.name + ' ? 1 : 0; }\n')
+    .add('if(typeof(')
+    .add(compiledName)
+    .add(') === "boolean") { ')
+    .add(compiledName)
+    .add(' = ')
+    .add(compiledName)
+    .add(' ? 1 : 0; }\n')
     .add(indentNode(indent))
-    .add(this.name + ' = Math.round(' + this.name + ');\n');
+    .add(compiledName)
+    .add(' = Math.round(')
+    .add(compiledName)
+    .add(');\n');
 
 	return node;
 };

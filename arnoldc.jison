@@ -98,10 +98,10 @@ statement
 		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| DECLARE_INT variable SET_INITIAL_VALUE integer
 		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
-	| BEGIN_ASSIGN VARIABLE SET_VALUE integer END_ASSIGN
+	| BEGIN_ASSIGN variable SET_VALUE integer END_ASSIGN
 		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, []);}
 
-	| BEGIN_ASSIGN VARIABLE SET_VALUE integer ops END_ASSIGN
+	| BEGIN_ASSIGN variable SET_VALUE integer ops END_ASSIGN
 		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, $5);}
 	| IF integer statements END_IF
 		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, [], @4.first_line, @4.first_column); }
