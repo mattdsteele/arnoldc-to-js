@@ -2,24 +2,17 @@
   'use strict';
 
   var fs = require('fs');
-  var gulp = require('gulp');
-  var jison = require('jison');
   var assert = require('assert');
   var fileOptions = {encoding: 'utf-8'};
 
   var Transpiler = require('../lib/Transpiler');
-  var bnf = fs.readFileSync('./arnoldc.jison', 'utf-8');
-  var parser = new jison.Parser(bnf);
-  parser.yy = require('../lib/ast');
 
   var cwd = process.cwd();
 
   function getCode(lePath) {
     // from main.js
     var data = fs.readFileSync(lePath, 'utf-8');
-    var AST = parser.parse(data);
-    var code = Transpiler.withSourceMaps(AST, lePath).toString();
-    return code;
+    return Transpiler.transpile(data, lePath).toString();
   }
 
   function doTest(pathPart, doneCallback) {
