@@ -67,11 +67,14 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
 	if (this.operations && this.operations.length > 0) {
 		var operationsStr = this.initialValue;
 
+    var opsNodes = [this.initialValue]
 		this.operations.forEach(function (operation) {
-			operationsStr = '(' + operationsStr + operation + ')';
+      opsNodes.splice(0, 0, '(');
+      opsNodes.push(operation.compile(indent, fileName));
+      opsNodes.push(')');
 		});
-
-		node.add(operationsStr +');\n');
+    node.add(opsNodes)
+      .add(');\n');
 	} else {
 		node.add(this.initialValue + ');\n');
 	}
@@ -199,6 +202,18 @@ Bool.prototype.compile = function(indent, fileName) {
   return this._sn(indent, fileName, this.boolVal);
 };
 
+function Operation(line, column, operation, variable) {
+  AstNode.call(this, line, column);
+  this.operation = operation;
+  this.variable = variable;
+}
+Operation.prototype = Object.create(AstNode.prototype);
+Operation.prototype.compile = function(indent, fileName) {
+  return this._sn(0, fileName, '')
+    .add(this.operation)
+    .add(this.variable);
+};
+
 function AssignementFromCallExpression (line, column, name, functionCalled) {
   AstNode.call(this, line, column);
 	this.name = name;
@@ -250,6 +265,7 @@ var yy = {
   AssignementFromCallExpression: AssignementFromCallExpression,
   ArgumentDeclarationExpression: ArgumentDeclarationExpression,
   Bool: Bool,
+  Operation: Operation,
   MainExpression: MainExpression
 };
 

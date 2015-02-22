@@ -156,23 +156,23 @@ ops
 
 op
 	: PLUS integer
-		{ $$ = ' + ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' + ', $2); }
 	| MINUS integer
-		{ $$ = ' - ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' - ', $2); }
 	| MULTIPLY integer
-		{ $$ = ' * ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' * ', $2); }
 	| DIVIDE integer
-		{ $$ = ' / ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' / ', $2); }
 	| MODULO integer
-		{ $$ = ' % ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' % ', $2); }
 	| EQUAL integer
-		{ $$ = ' == ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' == ', $2); }
 	| GREATER integer
-		{ $$ = ' > ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' > ', $2); }
 	| OR integer
-		{ $$ = ' || ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' || ', $2); }
 	| AND integer
-		{ $$ = ' && ' + $2; }
+    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' && ', $2); }
 	;
 
 %%
