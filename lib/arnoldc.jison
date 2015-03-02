@@ -39,7 +39,7 @@
 
 "GET YOUR ASS TO MARS"									return 'ASSIGN_FROM_CALL'
 
-[a-zA-Z0-9_]+											return 'VARIABLE'
+[a-zA-Z0-9_][a-zA-Z0-9_\.]*											return 'VARIABLE'
 
 \"(?:[^"\\]|\\.)*\"										return 'STRING_LITTERAL'
 
@@ -94,8 +94,6 @@ statements
 statement
 	: PRINT integer
 		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
-	| PRINT string
-		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
 	| DECLARE_INT variable SET_INITIAL_VALUE integer
 		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
 	| BEGIN_ASSIGN variable SET_VALUE integer END_ASSIGN
@@ -139,6 +137,7 @@ integer
 		{ $$ = new yy.IntegerLike(@1.first_line, @1.first_column, $1); }
 	| variable
 	| boolean
+  | string
 	;
 
 variable
