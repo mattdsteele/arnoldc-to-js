@@ -7,7 +7,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "gulp compile"
   },
   "bin": {
     "arnoldc.js": "./bin/main.js"
@@ -27,11 +28,12 @@
   },
   "homepage": "https://github.com/ThomasCrvsr/arnoldc-to-js",
   "devDependencies": {
-    "jshint-stylish": "~1.0.0",
     "del": "~1.1.1",
-    "gulp-mocha": "~2.0.0",
+    "gulp": "~3.8.10",
+    "gulp-babel": "^5.2.1",
     "gulp-jshint": "~1.9.0",
-    "gulp": "~3.8.10"
+    "gulp-mocha": "~2.0.0",
+    "jshint-stylish": "~1.0.0"
   },
   "dependencies": {
     "jison": "^0.4.15",

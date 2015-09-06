@@ -5,6 +5,7 @@
 
 # node stuff
 node_modules/
+lib
 
 # transpiled files
 examples/**/*.js
