@@ -1,8 +1,8 @@
-var sourceMap = require('source-map'),
-  SourceNode = sourceMap.SourceNode;
+import sourceMap from 'source-map';
+
+let SourceNode = sourceMap.SourceNode;
 
 //Helper functions
-
 function getIndentStr (level) {
 	var indentStr = '';
 	for (var i = 0; i < level; i++) {
@@ -16,74 +16,78 @@ function indentNode(level) {
 }
 
 //Base 'class'
-
-var AstNode = function(line, column) {
-  this.line = line;
-  this.column = column;
-};
-
-AstNode.prototype._sn = function(indent, fileName, chunk) {
-  return new SourceNode(this.line, this.column, fileName, '')
+class AstNode {
+  constructor(line, column) {
+    this.line = line;
+    this.column = column;
+  }
+  _sn(indent, fileName, chunk) {
+    return new SourceNode(this.line, this.column, fileName, '')
     .add(indentNode(indent))
     .add(chunk);
-};
+  }
+}
 
 //Keywords/Expressions
 
-function PrintExpression (line, column, value) {
-  AstNode.call(this, line, column);
-	this.value = value;
-}
-PrintExpression.prototype = Object.create(AstNode.prototype);
-PrintExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'console.log( ')
+class PrintExpression extends AstNode {
+  constructor(line, column, value) {
+    super(line, column);
+    this.value = value;
+  }
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, 'console.log( ')
     .add(this.value.compile(indent, fileName))
     .add(' );\n');
-};
-
-function IntDeclarationExpression (line, column, name, value) {
-  AstNode.call(this, line, column);
-	this.name = name;
-	this.value = value;
+  }
 }
-IntDeclarationExpression.prototype = Object.create(AstNode.prototype);
-IntDeclarationExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, '');
-  var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
-  node.add('var ')
+
+class IntDeclarationExpression extends AstNode {
+  constructor(line, column, name, value) {
+    super(line, column);
+    this.name = name;
+    this.value = value;
+  }
+
+  compile(indent, fileName) {
+    var node = this._sn(indent, fileName, '');
+    var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
+    node.add('var ')
     .add(this.name.compile(indent, fileName))
     .add(' = ')
     .add(val);
-  return node.add(';\n');
-};
-
-function AssignementExpression (line, column, name, initialValue, operations) {
-  AstNode.call(this, line, column);
-	this.name = name;
-	this.initialValue = initialValue;
-	this.operations = operations;
+    return node.add(';\n');
+  }
 }
-AssignementExpression.prototype = Object.create(AstNode.prototype);
-AssignementExpression.prototype.compile = function(indent, fileName) {
-  var compiledName = this.name.compile(indent, fileName);
-  var node = this._sn(indent, fileName, 'var ')
+
+class AssignementExpression extends AstNode {
+  constructor(line, column, name, initialValue, operations) {
+    super(line, column);
+    this.name = name;
+    this.initialValue = initialValue;
+    this.operations = operations;
+  }
+
+  compile(indent, fileName) {
+    var compiledName = this.name.compile(indent, fileName);
+    var node = this._sn(indent, fileName, 'var ')
     .add(compiledName)
     .add(' = (');
 
-	if (this.operations && this.operations.length > 0) {
-    var opsNodes = [this.initialValue.compile(indent, fileName)];
-		this.operations.forEach(function (operation) {
-      opsNodes.splice(0, 0, '(');
-      opsNodes.push(operation.compile(indent, fileName));
-      opsNodes.push(')');
-		});
-    node.add(opsNodes)
+    if (this.operations && this.operations.length > 0) {
+      var opsNodes = [this.initialValue.compile(indent, fileName)];
+      this.operations.forEach(function (operation) {
+        opsNodes.splice(0, 0, '(');
+        opsNodes.push(operation.compile(indent, fileName));
+        opsNodes.push(')');
+      });
+      node.add(opsNodes)
       .add(');\n');
-	} else {
-		node.add(this.initialValue.compile(indent, fileName))
+    } else {
+      node.add(this.initialValue.compile(indent, fileName))
       .add(');\n');
-	}
-  node.add(indentNode(indent))
+    }
+    node.add(indentNode(indent))
     .add('if(typeof(')
     .add(compiledName)
     .add(') === "boolean") { ')
@@ -97,58 +101,64 @@ AssignementExpression.prototype.compile = function(indent, fileName) {
     .add(compiledName)
     .add(');\n');
 
-	return node;
-};
-
-function IfExpression (line, column, predicate, ifStatements, elseStatements, endIfLine, endIfColumn, elseNode) {
-  AstNode.call(this, line, column);
-	this.predicate = predicate;
-	this.ifStatements = ifStatements;
-	this.elseStatements = elseStatements;
-  this.endIfLine = endIfLine;
-  this.endIfColumn = endIfColumn;
-  this.elseNode = elseNode;
+    return node;
+  }
 }
-IfExpression.prototype = Object.create(AstNode.prototype);
-IfExpression.prototype.compile = function(indent, fileName) {
-  var expr = this._sn(indent, fileName, 'if (')
+
+class IfExpression extends AstNode {
+  constructor(line, column, predicate, ifStatements, elseStatements, endIfLine, endIfColumn, elseNode) {
+    super(line, column);
+    this.predicate = predicate;
+    this.ifStatements = ifStatements;
+    this.elseStatements = elseStatements;
+    this.endIfLine = endIfLine;
+    this.endIfColumn = endIfColumn;
+    this.elseNode = elseNode;
+  }
+
+  compile(indent, fileName) {
+    var expr = this._sn(indent, fileName, 'if (')
     .add(this.predicate.compile(indent, fileName))
     .add(') { \n');
 
-	expr.add(this.ifStatements.map(function (node) {
-		return node.compile(indent + 1, fileName);
-  }));
+    expr.add(this.ifStatements.map(function (node) {
+      return node.compile(indent + 1, fileName);
+    }));
 
-	if (this.elseStatements && this.elseStatements.length > 0) {
-    expr.add(indentNode(indent))
+    if (this.elseStatements && this.elseStatements.length > 0) {
+      expr.add(indentNode(indent))
       .add('}\n')
       .add(this.elseNode.compile(indent, fileName))
       .add(this.elseStatements.map(function (node) {
         return node.compile(indent+1, fileName);
       }));
-	}
-  return expr.add(indentNode(indent))
+    }
+    return expr.add(indentNode(indent))
     .add(new SourceNode(this.endIfLine, this.endIfColumn, fileName, '}\n'));
-};
-
-function ElseNode(line, column) {
-  AstNode.call(this, line, column);
+  }
 }
-ElseNode.prototype = Object.create(AstNode.prototype);
-ElseNode.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'else { \n');
-};
 
-function WhileExpression (line, column, predicate, whileStatements, endLine, endColumn) {
-  AstNode.call(this, line, column);
+class ElseNode extends AstNode {
+  constructor(line, column) {
+    super(line, column);
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, 'else { \n');
+  }
+}
+
+class WhileExpression extends AstNode {
+  constructor(line, column, predicate, whileStatements, endLine, endColumn) {
+    super(line, column);
 	this.predicate = predicate;
 	this.whileStatements = whileStatements;
   this.endLine = endLine;
   this.endColumn = endColumn;
-}
-WhileExpression.prototype = Object.create(AstNode.prototype);
-WhileExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'while (')
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, 'while (')
     .add(this.predicate.compile(indent, fileName))
     .add(') {\n')
     .add(this.whileStatements.map(function (statement) {
@@ -156,21 +166,22 @@ WhileExpression.prototype.compile = function(indent, fileName) {
     }))
     .add(indentNode(indent))
     .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
-};
-
-
-function MethodDeclarationExpression (line, column, name, args, innerStatements, endLine, endColumn) {
-  AstNode.call(this, line, column);
-	this.name = name;
-	this.args = args;
-	this.innerStatements = innerStatements;
-  this.endLine = endLine;
-  this.endColumn = endColumn;
+  }
 }
 
-MethodDeclarationExpression.prototype = Object.create(AstNode.prototype);
-MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, 'function ')
+
+class MethodDeclarationExpression extends AstNode {
+  constructor(line, column, name, args, innerStatements, endLine, endColumn) {
+    super(line, column);
+    this.name = name;
+    this.args = args;
+    this.innerStatements = innerStatements;
+    this.endLine = endLine;
+    this.endColumn = endColumn;
+  }
+
+  compile(indent, fileName) {
+    var node = this._sn(indent, fileName, 'function ')
     .add(this.name.compile(indent, fileName))
     .add(' (');
 
@@ -188,115 +199,129 @@ MethodDeclarationExpression.prototype.compile = function(indent, fileName) {
     }))
     .add(indentNode(indent))
     .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
-};
+  }
+}
 
-function CallExpression (line, column, name, args) {
-  AstNode.call(this, line, column);
+
+class CallExpression extends AstNode {
+  constructor(line, column, name, args) {
+    super(line, column);
 	this.name = name;
 	this.args = args;
-}
-CallExpression.prototype = Object.create(AstNode.prototype);
-CallExpression.prototype.compile = function(indent, fileName) {
-  var node = this._sn(indent, fileName, '')
+  }
+
+  compile(indent, fileName) {
+    var node = this._sn(indent, fileName, '')
     .add(this.name.compile(indent, fileName))
     .add('(');
 
-  this.args.forEach(function(argument, i, self) {
-    node.add(argument.compile(indent, fileName));
-    if (i != self.length - 1) {
-      node.add(', ');
-    }
-  });
-  node.add(');\n');
-  return node;
-};
-
-function ReturnExpression (line, column, value) {
-  AstNode.call(this, line, column);
-	this.value = value;
+    this.args.forEach(function(argument, i, self) {
+      node.add(argument.compile(indent, fileName));
+      if (i != self.length - 1) {
+        node.add(', ');
+      }
+    });
+    node.add(');\n');
+    return node;
+  }
 }
-ReturnExpression.prototype = Object.create(AstNode.prototype);
-ReturnExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'return ')
+
+class ReturnExpression extends AstNode {
+  constructor(line, column, value) {
+    super(line, column);
+	this.value = value;
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, 'return ')
     .add(this.value.compile(indent, fileName))
     .add(';\n');
-};
-
-function IntegerLike(line, column, boolVal) {
-  AstNode.call(this, line, column);
-  this.boolVal = boolVal;
+  }
 }
-IntegerLike.prototype = Object.create(AstNode.prototype);
-IntegerLike.prototype.compile = function(indent, fileName) {
-  return this._sn(0, fileName, this.boolVal);
-};
 
-function Operation(line, column, operation, variable) {
-  AstNode.call(this, line, column);
+class IntegerLike extends AstNode {
+  constructor(line, column, boolVal) {
+    super(line, column);
+  this.boolVal = boolVal;
+  }
+
+  compile(indent, fileName) {
+    return this._sn(0, fileName, this.boolVal);
+  }
+}
+
+class Operation extends AstNode {
+  constructor(line, column, operation, variable) {
+    super(line, column);
   this.operation = operation;
   this.variable = variable;
-}
-Operation.prototype = Object.create(AstNode.prototype);
-Operation.prototype.compile = function(indent, fileName) {
-  return this._sn(0, fileName, '')
+  }
+
+  compile(indent, fileName) {
+    return this._sn(0, fileName, '')
     .add(this.operation)
     .add(this.variable.compile(indent, fileName));
-};
+  }
+}
 
-function AssignementFromCallExpression (line, column, name, functionCalled) {
-  AstNode.call(this, line, column);
+class AssignementFromCallExpression extends AstNode {
+  constructor(line, column, name, functionCalled) {
+    super(line, column);
 	this.name = name;
 	this.functionCalled = functionCalled;
-}
-AssignementFromCallExpression.prototype = Object.create(AstNode.prototype);
-AssignementFromCallExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, 'var ')
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, 'var ')
     .add(this.name.compile(indent, fileName))
     .add(' = ')
     .add(this.functionCalled.compile(0, fileName));
-};
-
-function ArgumentDeclarationExpression(line, column, variable) {
-  AstNode.call(this, line, column);
-  this.variable = variable;
+  }
 }
-ArgumentDeclarationExpression.prototype = Object.create(AstNode.prototype);
-ArgumentDeclarationExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, '')
-    .add(this.variable.compile(indent, fileName));
-};
 
-function MainExpression (statements, line, column, endLine, endColumn) {
-  AstNode.call(this, line, column);
+class ArgumentDeclarationExpression extends AstNode {
+  constructor(line, column, variable) {
+    super(line, column);
+  this.variable = variable;
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, '')
+    .add(this.variable.compile(indent, fileName));
+  }
+}
+
+class MainExpression extends AstNode {
+  constructor(statements, line, column, endLine, endColumn) {
+    super(line, column);
 	this.statements = statements;
   this.endLine = endLine;
   this.endColumn = endColumn;
-}
-MainExpression.prototype = Object.create(AstNode.prototype);
-MainExpression.prototype.compile = function(indent, fileName) {
-  return this._sn(indent, fileName, '(function() {\n')
+  }
+
+  compile(indent, fileName) {
+    return this._sn(indent, fileName, '(function() {\n')
     .add(this.statements.map(function (child) {
       return child.compile(indent + 1, fileName);
     }))
     .add(indentNode(indent))
     .add(new SourceNode(this.endLine, this.endColumn, fileName, '}());\n'));
-};
+  }
+}
 
-var yy = {
-  PrintExpression: PrintExpression,
-  IntDeclarationExpression: IntDeclarationExpression,
-  AssignementExpression: AssignementExpression,
-  IfExpression: IfExpression,
-  ElseNode: ElseNode,
-  WhileExpression: WhileExpression,
-  MethodDeclarationExpression: MethodDeclarationExpression,
-  CallExpression: CallExpression,
-  ReturnExpression: ReturnExpression,
-  AssignementFromCallExpression: AssignementFromCallExpression,
-  ArgumentDeclarationExpression: ArgumentDeclarationExpression,
-  IntegerLike: IntegerLike,
-  Operation: Operation,
-  MainExpression: MainExpression
+export default {
+  PrintExpression,
+  IntDeclarationExpression,
+  AssignementExpression,
+  IfExpression,
+  ElseNode,
+  WhileExpression,
+  MethodDeclarationExpression,
+  CallExpression,
+  ReturnExpression,
+  AssignementFromCallExpression,
+  ArgumentDeclarationExpression,
+  IntegerLike,
+  Operation,
+  MainExpression,
 };
-
-module.exports = yy;
