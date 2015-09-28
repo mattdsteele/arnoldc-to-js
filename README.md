@@ -4,6 +4,10 @@ arnoldc.js is a compiler from ArnoldC language to Javascript, with support for s
 
 You can read about the original project here : https://github.com/lhartikk/ArnoldC
 
+Also available as:
+
+* [Gulp plugin](https://github.com/mattdsteele/gulp-arnoldc)
+
 ## How to use it
 
 Install: `npm install arnoldc.js --global`
