@@ -7,6 +7,7 @@ You can read about the original project here : https://github.com/lhartikk/Arnol
 Also available as:
 
 * [Gulp plugin](https://github.com/mattdsteele/gulp-arnoldc)
+* [Webpack loader](https://github.com/mattdsteele/arnoldc-loader)
 
 ## How to use it
 
