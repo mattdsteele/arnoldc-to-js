@@ -52,7 +52,10 @@
 
 program
 	: methods BEGIN_MAIN statements END_MAIN methods EOF
-		{ return $1.concat($5).concat(new yy.MainExpression($3, @2.first_line, @2.first_column, @4.first_line, @4.first_column)); }
+		{ return $1
+        .concat($5)
+        .concat(new yy.MainExpression($3, @2, @4)); 
+    }
 	;
 
 methods
@@ -93,31 +96,31 @@ statements
 
 statement
 	: PRINT integer
-		{ $$ = new yy.PrintExpression(@1.first_line, @1.first_column, $2); }
+		{ $$ = new yy.PrintExpression(@1, $2); }
 	| DECLARE_INT variable SET_INITIAL_VALUE integer
-		{ $$ = new yy.IntDeclarationExpression(@1.first_line, @1.first_column, $2, $4); }
+		{ $$ = new yy.IntDeclarationExpression(@1, $2, $4); }
 	| BEGIN_ASSIGN variable SET_VALUE integer END_ASSIGN
-		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, []);}
+		{ $$ = new yy.AssignmentExpression(@1, $2, $4, []);}
 
 	| BEGIN_ASSIGN variable SET_VALUE integer ops END_ASSIGN
-		{ $$ = new yy.AssignementExpression(@1.first_line, @1.first_column, $2, $4, $5);}
+		{ $$ = new yy.AssignmentExpression(@1, $2, $4, $5);}
 	| IF integer statements END_IF
-		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, [], @4.first_line, @4.first_column); }
+		{ $$ = new yy.IfExpression(@1, $2, $3, [], @4); }
 	| IF integer statements else statements END_IF
-		{ $$ = new yy.IfExpression(@1.first_line, @1.first_column, $2, $3, $5, @6.first_line, @6.first_column, $4); }
+		{ $$ = new yy.IfExpression(@1, $2, $3, $5, @6, $4); }
 	| WHILE variable statements END_WHILE
-		{ $$ = new yy.WhileExpression(@1.first_line, @1.first_column, $2, $3, @4.first_line, @4.first_column); }
+		{ $$ = new yy.WhileExpression(@1, $2, $3, @4); }
 	| method_call
 		{ $$ = $1; }
 	| ASSIGN_FROM_CALL variable method_call
-		{ $$ = new yy.AssignementFromCallExpression(@1.first_line, @1.first_column, $2, $3); }
+		{ $$ = new yy.AssignmentFromCallExpression(@1, $2, $3); }
 	| RETURN integer
-		{ $$ = new yy.ReturnExpression(@1.first_line, @1.first_column, $2); }
+		{ $$ = new yy.ReturnExpression(@1, $2); }
 	;
 
 method_call
 	: CALL_METHOD variable arguments
-		{ $$ = new yy.CallExpression(@1.first_line, @1.first_column, $2, $3); }
+		{ $$ = new yy.CallExpression(@1, $2, $3); }
 	;
 
 arguments
@@ -166,23 +169,23 @@ ops
 
 op
 	: PLUS integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' + ', $2); }
+    { $$ = new yy.Operation(@1, ' + ', $2); }
 	| MINUS integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' - ', $2); }
+    { $$ = new yy.Operation(@1, ' - ', $2); }
 	| MULTIPLY integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' * ', $2); }
+    { $$ = new yy.Operation(@1, ' * ', $2); }
 	| DIVIDE integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' / ', $2); }
+    { $$ = new yy.Operation(@1, ' / ', $2); }
 	| MODULO integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' % ', $2); }
+    { $$ = new yy.Operation(@1, ' % ', $2); }
 	| EQUAL integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' == ', $2); }
+    { $$ = new yy.Operation(@1, ' == ', $2); }
 	| GREATER integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' > ', $2); }
+    { $$ = new yy.Operation(@1, ' > ', $2); }
 	| OR integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' || ', $2); }
+    { $$ = new yy.Operation(@1, ' || ', $2); }
 	| AND integer
-    { $$ = new yy.Operation(@1.first_line, @1.first_column, ' && ', $2); }
+    { $$ = new yy.Operation(@1, ' && ', $2); }
 	;
 
 %%

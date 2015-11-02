@@ -1,21 +1,13 @@
 import sourceMap from 'source-map';
 
 let SourceNode = sourceMap.SourceNode;
+let indentSize = 2;
 
 //Helper functions
-function getIndentStr (level) {
-	var indentStr = '';
-	for (var i = 0; i < level; i++) {
-		indentStr += '    ';
-	}
-	return indentStr;
-}
+let getIndentStr = level => new Array(indentSize * level).join(' ');
+let indentNode = level => new SourceNode(null, null, null, getIndentStr(level));
 
-function indentNode(level) {
-  return new SourceNode(null, null, null, getIndentStr(level));
-}
-
-//Base 'class'
+//Base class
 class AstNode {
   constructor(line, column) {
     this.line = line;
@@ -26,13 +18,16 @@ class AstNode {
     .add(indentNode(indent))
     .add(chunk);
   }
+  compile(indent, fileName) {
+    //Abstract
+  }
 }
 
 //Keywords/Expressions
 
 class PrintExpression extends AstNode {
-  constructor(line, column, value) {
-    super(line, column);
+  constructor(position, value) {
+    super(position.first_line, position.first_column);
     this.value = value;
   }
   compile(indent, fileName) {
@@ -43,8 +38,8 @@ class PrintExpression extends AstNode {
 }
 
 class IntDeclarationExpression extends AstNode {
-  constructor(line, column, name, value) {
-    super(line, column);
+  constructor(position, name, value) {
+    super(position.first_line, position.first_column);
     this.name = name;
     this.value = value;
   }
@@ -60,9 +55,9 @@ class IntDeclarationExpression extends AstNode {
   }
 }
 
-class AssignementExpression extends AstNode {
-  constructor(line, column, name, initialValue, operations) {
-    super(line, column);
+class AssignmentExpression extends AstNode {
+  constructor(position, name, initialValue, operations) {
+    super(position.first_line, position.first_column);
     this.name = name;
     this.initialValue = initialValue;
     this.operations = operations;
@@ -106,13 +101,13 @@ class AssignementExpression extends AstNode {
 }
 
 class IfExpression extends AstNode {
-  constructor(line, column, predicate, ifStatements, elseStatements, endIfLine, endIfColumn, elseNode) {
-    super(line, column);
+  constructor(position, predicate, ifStatements, elseStatements, endPosition, elseNode) {
+    super(position.first_line, position.first_column);
     this.predicate = predicate;
     this.ifStatements = ifStatements;
     this.elseStatements = elseStatements;
-    this.endIfLine = endIfLine;
-    this.endIfColumn = endIfColumn;
+    this.endIfLine = endPosition.first_line;
+    this.endIfColumn = endPosition.first_column;
     this.elseNode = elseNode;
   }
 
@@ -149,12 +144,12 @@ class ElseNode extends AstNode {
 }
 
 class WhileExpression extends AstNode {
-  constructor(line, column, predicate, whileStatements, endLine, endColumn) {
-    super(line, column);
-	this.predicate = predicate;
-	this.whileStatements = whileStatements;
-  this.endLine = endLine;
-  this.endColumn = endColumn;
+  constructor(position, predicate, whileStatements, endPosition) {
+    super(position.first_line, position.first_column);
+    this.predicate = predicate;
+    this.whileStatements = whileStatements;
+    this.endLine = endPosition.first_line;
+    this.endColumn = endPosition.first_column;
   }
 
   compile(indent, fileName) {
@@ -204,10 +199,10 @@ class MethodDeclarationExpression extends AstNode {
 
 
 class CallExpression extends AstNode {
-  constructor(line, column, name, args) {
-    super(line, column);
-	this.name = name;
-	this.args = args;
+  constructor(position, name, args) {
+    super(position.first_line, position.first_column);
+    this.name = name;
+    this.args = args;
   }
 
   compile(indent, fileName) {
@@ -227,9 +222,9 @@ class CallExpression extends AstNode {
 }
 
 class ReturnExpression extends AstNode {
-  constructor(line, column, value) {
-    super(line, column);
-	this.value = value;
+  constructor(position, value) {
+    super(position.first_line, position.first_column);
+    this.value = value;
   }
 
   compile(indent, fileName) {
@@ -251,8 +246,8 @@ class IntegerLike extends AstNode {
 }
 
 class Operation extends AstNode {
-  constructor(line, column, operation, variable) {
-    super(line, column);
+  constructor(position, operation, variable) {
+    super(position.first_line, position.first_column);
   this.operation = operation;
   this.variable = variable;
   }
@@ -264,11 +259,11 @@ class Operation extends AstNode {
   }
 }
 
-class AssignementFromCallExpression extends AstNode {
-  constructor(line, column, name, functionCalled) {
-    super(line, column);
-	this.name = name;
-	this.functionCalled = functionCalled;
+class AssignmentFromCallExpression extends AstNode {
+  constructor(position, name, functionCalled) {
+    super(position.first_line, position.first_column);
+    this.name = name;
+    this.functionCalled = functionCalled;
   }
 
   compile(indent, fileName) {
@@ -282,7 +277,7 @@ class AssignementFromCallExpression extends AstNode {
 class ArgumentDeclarationExpression extends AstNode {
   constructor(line, column, variable) {
     super(line, column);
-  this.variable = variable;
+    this.variable = variable;
   }
 
   compile(indent, fileName) {
@@ -292,11 +287,11 @@ class ArgumentDeclarationExpression extends AstNode {
 }
 
 class MainExpression extends AstNode {
-  constructor(statements, line, column, endLine, endColumn) {
-    super(line, column);
-	this.statements = statements;
-  this.endLine = endLine;
-  this.endColumn = endColumn;
+  constructor(statements, startPosition, endPosition) {
+    super(startPosition.first_line, startPosition.first_column);
+    this.statements = statements;
+    this.endLine = endPosition.first_line;
+    this.endColumn = endPosition.first_column;
   }
 
   compile(indent, fileName) {
@@ -312,14 +307,14 @@ class MainExpression extends AstNode {
 export default {
   PrintExpression,
   IntDeclarationExpression,
-  AssignementExpression,
+  AssignmentExpression,
   IfExpression,
   ElseNode,
   WhileExpression,
   MethodDeclarationExpression,
   CallExpression,
   ReturnExpression,
-  AssignementFromCallExpression,
+  AssignmentFromCallExpression,
   ArgumentDeclarationExpression,
   IntegerLike,
   Operation,

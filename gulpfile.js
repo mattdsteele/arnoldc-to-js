@@ -27,7 +27,7 @@ gulp.task('jison', function() {
     .pipe(gulp.dest('lib'));
 });
 
-gulp.task('compile', function() {
+gulp.task('compile', ['jison'], function() {
   return gulp.src('src/**/*.js')
     .pipe(babel())
     .pipe(gulp.dest('lib'));
