@@ -1,6 +1,6 @@
 {
   "name": "arnoldc.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Compiler from ArnoldC to Javascript",
   "main": "main.js",
   "directories": {
@@ -36,7 +36,13 @@
     "jshint-stylish": "~1.0.0"
   },
   "dependencies": {
+    "brfs": "^1.4.1",
     "jison": "^0.4.15",
     "source-map": "^0.3.0"
+  },
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
   }
 }
