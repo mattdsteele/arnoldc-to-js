@@ -295,12 +295,10 @@ class MainExpression extends AstNode {
   }
 
   compile(indent, fileName) {
-    return this._sn(indent, fileName, '(function() {\n')
+    return this._sn(indent, fileName, '')
     .add(this.statements.map(function (child) {
       return child.compile(indent + 1, fileName);
-    }))
-    .add(indentNode(indent))
-    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}());\n'));
+    }));
   }
 }
 
