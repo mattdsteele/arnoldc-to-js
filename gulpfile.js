@@ -27,7 +27,7 @@ gulp.task('compile', gulp.series('jison', () => {
 
 gulp.task('test', gulp.series(['clean', 'compile', function () {
   return gulp.src('test/**/*Test.js', { read: false })
-    .pipe(mocha({ reporter: 'nyan' }));
+    .pipe(mocha());
 }]));
 
 gulp.task('lint', gulp.series(['compile', function () {
