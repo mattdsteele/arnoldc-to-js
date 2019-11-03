@@ -15,5 +15,5 @@ jobs:
     steps:
     - uses: mattdsteele/salty-issue-detector@releases
       name: Salty Issues
-      env:
+      with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
