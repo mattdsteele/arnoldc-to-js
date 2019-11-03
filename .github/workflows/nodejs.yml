@@ -24,3 +24,10 @@ jobs:
         npm test
       env:
         CI: true
+    - name: Slack notification
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: alerts # Optional
+      uses: Ilshidur/action-slack@master
+      with:
+        args: 'Build succeeded! {{ GITHUB_ACTION }} as {{ EVENT_PAYLOAD.pull_request.id }}'
