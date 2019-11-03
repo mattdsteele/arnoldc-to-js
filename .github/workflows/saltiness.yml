@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  issue_comment:
+    types: [created] 
+
+jobs:
+  sentiment:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: mattdsteele/salty-issue-detector
+      name: Salty Issues
+      env:
+        github-token: ${{ secrets.GITHUB_TOKEN }} 
