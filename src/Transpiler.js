@@ -1,6 +1,7 @@
 var jison = require('jison');
 var path = require('path');
 var fs = require('fs');
+const { promisify } = require('util');
 
 var sourceMap = require('source-map'),
   SourceNode = sourceMap.SourceNode;
@@ -22,6 +23,7 @@ var withSourceMaps = function (nodes, fileName) {
 };
 
 var transpile = function (source, fileName) {
+  promisify.length; // This will fail in Node < 10
   var bnf = fs.readFileSync(path.join(__dirname, './arnoldc.jison'), 'utf-8');
   var parser = new jison.Parser(bnf);
   parser.yy = require('./ast').default;
