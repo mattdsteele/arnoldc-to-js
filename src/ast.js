@@ -15,8 +15,8 @@ class AstNode {
   }
   _sn(indent, fileName, chunk) {
     return new SourceNode(this.line, this.column, fileName, '')
-    .add(indentNode(indent))
-    .add(chunk);
+      .add(indentNode(indent))
+      .add(chunk);
   }
   compile(indent, fileName) {
     //Abstract
@@ -32,8 +32,8 @@ class PrintExpression extends AstNode {
   }
   compile(indent, fileName) {
     return this._sn(indent, fileName, 'console.log( ')
-    .add(this.value.compile(indent, fileName))
-    .add(' );\n');
+      .add(this.value.compile(indent, fileName))
+      .add(' );\n');
   }
 }
 
@@ -48,9 +48,9 @@ class IntDeclarationExpression extends AstNode {
     var node = this._sn(indent, fileName, '');
     var val = this.value.compile ? this.value.compile(0, fileName) : this.value;
     node.add('var ')
-    .add(this.name.compile(indent, fileName))
-    .add(' = ')
-    .add(val);
+      .add(this.name.compile(indent, fileName))
+      .add(' = ')
+      .add(val);
     return node.add(';\n');
   }
 }
@@ -66,8 +66,8 @@ class AssignmentExpression extends AstNode {
   compile(indent, fileName) {
     var compiledName = this.name.compile(indent, fileName);
     var node = this._sn(indent, fileName, 'var ')
-    .add(compiledName)
-    .add(' = (');
+      .add(compiledName)
+      .add(' = (');
 
     if (this.operations && this.operations.length > 0) {
       var opsNodes = [this.initialValue.compile(indent, fileName)];
@@ -77,24 +77,24 @@ class AssignmentExpression extends AstNode {
         opsNodes.push(')');
       });
       node.add(opsNodes)
-      .add(');\n');
+        .add(');\n');
     } else {
       node.add(this.initialValue.compile(indent, fileName))
-      .add(');\n');
+        .add(');\n');
     }
     node.add(indentNode(indent))
-    .add('if(typeof(')
-    .add(compiledName)
-    .add(') === "boolean") { ')
-    .add(compiledName)
-    .add(' = ')
-    .add(compiledName)
-    .add(' ? 1 : 0; }\n')
-    .add(indentNode(indent))
-    .add(compiledName)
-    .add(' = Math.round(')
-    .add(compiledName)
-    .add(');\n');
+      .add('if(typeof(')
+      .add(compiledName)
+      .add(') === "boolean") { ')
+      .add(compiledName)
+      .add(' = ')
+      .add(compiledName)
+      .add(' ? 1 : 0; }\n')
+      .add(indentNode(indent))
+      .add(compiledName)
+      .add(' = Math.round(')
+      .add(compiledName)
+      .add(');\n');
 
     return node;
   }
@@ -113,8 +113,8 @@ class IfExpression extends AstNode {
 
   compile(indent, fileName) {
     var expr = this._sn(indent, fileName, 'if (')
-    .add(this.predicate.compile(indent, fileName))
-    .add(') { \n');
+      .add(this.predicate.compile(indent, fileName))
+      .add(') { \n');
 
     expr.add(this.ifStatements.map(function (node) {
       return node.compile(indent + 1, fileName);
@@ -122,14 +122,14 @@ class IfExpression extends AstNode {
 
     if (this.elseStatements && this.elseStatements.length > 0) {
       expr.add(indentNode(indent))
-      .add('}\n')
-      .add(this.elseNode.compile(indent, fileName))
-      .add(this.elseStatements.map(function (node) {
-        return node.compile(indent+1, fileName);
-      }));
+        .add('}\n')
+        .add(this.elseNode.compile(indent, fileName))
+        .add(this.elseStatements.map(function (node) {
+          return node.compile(indent + 1, fileName);
+        }));
     }
     return expr.add(indentNode(indent))
-    .add(new SourceNode(this.endIfLine, this.endIfColumn, fileName, '}\n'));
+      .add(new SourceNode(this.endIfLine, this.endIfColumn, fileName, '}\n'));
   }
 }
 
@@ -154,13 +154,13 @@ class WhileExpression extends AstNode {
 
   compile(indent, fileName) {
     return this._sn(indent, fileName, 'while (')
-    .add(this.predicate.compile(indent, fileName))
-    .add(') {\n')
-    .add(this.whileStatements.map(function (statement) {
-      return statement.compile(indent + 1, fileName);
-    }))
-    .add(indentNode(indent))
-    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
+      .add(this.predicate.compile(indent, fileName))
+      .add(') {\n')
+      .add(this.whileStatements.map(function (statement) {
+        return statement.compile(indent + 1, fileName);
+      }))
+      .add(indentNode(indent))
+      .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
   }
 }
 
@@ -177,11 +177,11 @@ class MethodDeclarationExpression extends AstNode {
 
   compile(indent, fileName) {
     var node = this._sn(indent, fileName, 'function ')
-    .add(this.name.compile(indent, fileName))
-    .add(' (');
+      .add(this.name.compile(indent, fileName))
+      .add(' (');
 
 
-    this.args.forEach(function(argument, i, self) {
+    this.args.forEach(function (argument, i, self) {
       node.add(argument.compile(0, fileName));
       if (i != self.length - 1) {
         node.add(', ');
@@ -189,11 +189,11 @@ class MethodDeclarationExpression extends AstNode {
     });
 
     return node.add(') {\n')
-    .add(this.innerStatements.map(function(statement) {
-      return statement.compile(indent + 1, fileName);
-    }))
-    .add(indentNode(indent))
-    .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
+      .add(this.innerStatements.map(function (statement) {
+        return statement.compile(indent + 1, fileName);
+      }))
+      .add(indentNode(indent))
+      .add(new SourceNode(this.endLine, this.endColumn, fileName, '}\n'));
   }
 }
 
@@ -207,10 +207,10 @@ class CallExpression extends AstNode {
 
   compile(indent, fileName) {
     var node = this._sn(indent, fileName, '')
-    .add(this.name.compile(indent, fileName))
-    .add('(');
+      .add(this.name.compile(indent, fileName))
+      .add('(');
 
-    this.args.forEach(function(argument, i, self) {
+    this.args.forEach(function (argument, i, self) {
       node.add(argument.compile(indent, fileName));
       if (i != self.length - 1) {
         node.add(', ');
@@ -229,15 +229,15 @@ class ReturnExpression extends AstNode {
 
   compile(indent, fileName) {
     return this._sn(indent, fileName, 'return ')
-    .add(this.value.compile(indent, fileName))
-    .add(';\n');
+      .add(this.value.compile(indent, fileName))
+      .add(';\n');
   }
 }
 
 class IntegerLike extends AstNode {
   constructor(line, column, boolVal) {
     super(line, column);
-  this.boolVal = boolVal;
+    this.boolVal = boolVal;
   }
 
   compile(indent, fileName) {
@@ -248,14 +248,14 @@ class IntegerLike extends AstNode {
 class Operation extends AstNode {
   constructor(position, operation, variable) {
     super(position.first_line, position.first_column);
-  this.operation = operation;
-  this.variable = variable;
+    this.operation = operation;
+    this.variable = variable;
   }
 
   compile(indent, fileName) {
     return this._sn(0, fileName, '')
-    .add(this.operation)
-    .add(this.variable.compile(indent, fileName));
+      .add(this.operation)
+      .add(this.variable.compile(indent, fileName));
   }
 }
 
@@ -268,9 +268,9 @@ class AssignmentFromCallExpression extends AstNode {
 
   compile(indent, fileName) {
     return this._sn(indent, fileName, 'var ')
-    .add(this.name.compile(indent, fileName))
-    .add(' = ')
-    .add(this.functionCalled.compile(0, fileName));
+      .add(this.name.compile(indent, fileName))
+      .add(' = ')
+      .add(this.functionCalled.compile(0, fileName));
   }
 }
 
@@ -282,7 +282,7 @@ class ArgumentDeclarationExpression extends AstNode {
 
   compile(indent, fileName) {
     return this._sn(indent, fileName, '')
-    .add(this.variable.compile(indent, fileName));
+      .add(this.variable.compile(indent, fileName));
   }
 }
 
@@ -296,9 +296,9 @@ class MainExpression extends AstNode {
 
   compile(indent, fileName) {
     return this._sn(indent, fileName, '')
-    .add(this.statements.map(function (child) {
-      return child.compile(indent + 1, fileName);
-    }));
+      .add(this.statements.map(function (child) {
+        return child.compile(indent + 1, fileName);
+      }));
   }
 }
 

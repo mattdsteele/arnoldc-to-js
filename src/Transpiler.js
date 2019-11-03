@@ -5,11 +5,11 @@ var fs = require('fs');
 var sourceMap = require('source-map'),
   SourceNode = sourceMap.SourceNode;
 
-var withSourceMaps = function(nodes, fileName) {
+var withSourceMaps = function (nodes, fileName) {
   var preamble = new SourceNode(null, null, null, '')
     .add('(function() {\n "use strict";\n');
 
-  var codes = nodes.forEach(function(expr) {
+  var codes = nodes.forEach(function (expr) {
     preamble.add(expr.compile(1, fileName));
   });
 
@@ -21,10 +21,10 @@ var withSourceMaps = function(nodes, fileName) {
   return preamble;
 };
 
-var transpile = function(source, fileName) {
+var transpile = function (source, fileName) {
   var bnf = fs.readFileSync(path.join(__dirname, './arnoldc.jison'), 'utf-8');
   var parser = new jison.Parser(bnf);
-  parser.yy = require('./ast');
+  parser.yy = require('./ast').default;
   var AST = parser.parse(source);
 
   var mapping = withSourceMaps(AST, fileName);
