@@ -2,7 +2,10 @@ name: CI
 
 on:
   issue_comment:
-    types: [created] 
+    types: [created]
+  issues:
+    types: [created]
+  
 
 jobs:
   sentiment:
@@ -10,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: mattdsteele/salty-issue-detector
+    - uses: mattdsteele/salty-issue-detector@releases
       name: Salty Issues
       env:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
