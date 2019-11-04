@@ -1,10 +1,10 @@
-name: CI
+name: Issue Saltiness
 
 on:
   issue_comment:
     types: [created]
   issues:
-    types: [created]
+    types: [opened]
   
 
 jobs:
