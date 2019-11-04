@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: mattdsteele/salty-issue-detector@releases
+    - uses: mattdsteele/salty-issue-detector@debug
       name: Salty Issues
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
