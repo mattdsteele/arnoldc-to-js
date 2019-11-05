@@ -24,3 +24,11 @@ jobs:
         npm test
       env:
         CI: true
+    - name: Slack notification
+      if: failure()
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: alerts # Optional
+      uses: Ilshidur/action-slack@master
+      with:
+        args: 'Build failed! {{ GITHUB_ACTION }} for Node ${{ matrix.node-version }}'
