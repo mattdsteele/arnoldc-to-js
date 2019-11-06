@@ -1,0 +1,11 @@
+name: Dispense Candy
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: docker://mattdsteele/particle-github-action:latest
+      env:
+        FUNCTION_NAME: ${{ secrets.PARTICLE_FUNCTION_NAME }}
+        DEVICE_ID: ${{ secrets.PARTICLE_DEVICE_ID }}
+        ACCESS_TOKEN: ${{ secrets.PARTICLE_ACCESS_TOKEN }}
