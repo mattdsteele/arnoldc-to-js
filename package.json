@@ -1,6 +1,6 @@
 {
   "name": "arnoldc.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Compiler from ArnoldC to Javascript",
   "main": "main.js",
   "directories": {
