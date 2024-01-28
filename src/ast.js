@@ -1,4 +1,5 @@
-import sourceMap from 'source-map';
+// import sourceMap from 'source-map';
+const sourceMap = require('source-map');
 
 let SourceNode = sourceMap.SourceNode;
 let indentSize = 2;
@@ -302,7 +303,7 @@ class MainExpression extends AstNode {
   }
 }
 
-export default {
+exports.default = {
   PrintExpression,
   IntDeclarationExpression,
   AssignmentExpression,

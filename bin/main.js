@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var fs = require('fs');
-var Transpiler = require('../lib/Transpiler');
+var Transpiler = require('../src/Transpiler');
 
 if (process.argv[2]) {
   var fileName = process.argv[2];

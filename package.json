@@ -7,9 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "gulp test",
-    "prepublishOnly": "gulp compile",
-    "build": "gulp compile"
+    "test": "mocha"
   },
   "bin": {
     "arnoldc.js": "./bin/main.js"
@@ -29,19 +27,14 @@
   },
   "homepage": "https://github.com/ThomasCrvsr/arnoldc-to-js",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
     "del": "^5",
-    "gulp": "^4",
-    "gulp-babel": "^8",
-    "gulp-jshint": "^2",
-    "gulp-mocha": "^7",
     "jshint": "^2.10.2",
     "jshint-stylish": "~1.0.0"
   },
   "dependencies": {
     "brfs": "^1.4.1",
     "jison": "^0.4.18",
+    "mocha": "^10.2.0",
     "source-map": "^0.3.0"
   },
   "browserify": {

@@ -5,7 +5,7 @@
   var assert = require('assert');
   var fileOptions = {encoding: 'utf-8'};
 
-  var Transpiler = require('../lib/Transpiler');
+  var Transpiler = require('../src/Transpiler');
 
   var cwd = process.cwd();
 
