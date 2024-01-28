@@ -1,9 +1,14 @@
-var jison = require('jison');
-var path = require('path');
-var fs = require('fs');
+import jison from 'jison';
+import path from 'node:path';
+import fs from 'node:fs';
+import * as sourceMap from 'source-map';
+import * as Parser from './ast.js';
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
-var sourceMap = require('source-map'),
-  SourceNode = sourceMap.SourceNode;
+const SourceNode = sourceMap.SourceNode;
 
 var withSourceMaps = function (nodes, fileName) {
   var preamble = new SourceNode(null, null, null, '')
@@ -24,7 +29,7 @@ var withSourceMaps = function (nodes, fileName) {
 var transpile = function (source, fileName) {
   var bnf = fs.readFileSync(path.join(__dirname, './arnoldc.jison'), 'utf-8');
   var parser = new jison.Parser(bnf);
-  parser.yy = require('./ast').default;
+  parser.yy = Parser;
   var AST = parser.parse(source);
 
   var mapping = withSourceMaps(AST, fileName);
@@ -32,5 +37,4 @@ var transpile = function (source, fileName) {
   return mapping;
 };
 
-module.exports.transpile = transpile;
-module.exports.withSourceMaps = withSourceMaps;
+export { transpile, withSourceMaps };

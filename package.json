@@ -1,7 +1,8 @@
 {
   "name": "arnoldc.js",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Compiler from ArnoldC to Javascript",
+  "type": "module",
   "main": "main.js",
   "directories": {
     "example": "examples"
@@ -35,7 +36,7 @@
     "brfs": "^1.4.1",
     "jison": "^0.4.18",
     "mocha": "^10.2.0",
-    "source-map": "^0.3.0"
+    "source-map": "^0.7.4"
   },
   "browserify": {
     "transform": [

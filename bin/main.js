@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-var fs = require('fs');
-var Transpiler = require('../src/Transpiler');
+import fs from 'node:fs;'
+import { transpile } from '../src/Transpiler';
 
 if (process.argv[2]) {
   var fileName = process.argv[2];
@@ -8,7 +8,7 @@ if (process.argv[2]) {
   var ext = fileName.split('.');
 
   if (ext.length > 0 && ext[ext.length - 1] === 'arnoldc') {
-    var mapping = Transpiler.transpile(fs.readFileSync(fileName, 'utf-8'), fileName);
+    var mapping = transpile(fs.readFileSync(fileName, 'utf-8'), fileName);
 
     var jsFile = fileName + '.js',
       sourceMapName = jsFile + '.map';
