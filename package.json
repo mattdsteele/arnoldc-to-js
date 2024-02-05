@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/ThomasCrvsr/arnoldc-to-js",
   "devDependencies": {
+    "@stryker-mutator/mocha-runner": "^8.2.3",
     "del": "^5",
     "jshint": "^2.10.2",
     "jshint-stylish": "~1.0.0"

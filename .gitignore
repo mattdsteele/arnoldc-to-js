@@ -10,3 +10,6 @@ lib
 # transpiled files
 examples/**/*.js
 examples/**/*.js.map
+
+# stryker temp files
+.stryker-tmp
