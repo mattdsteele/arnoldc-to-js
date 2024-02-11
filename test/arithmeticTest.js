@@ -101,6 +101,10 @@ describe('arithmetics', function() {
     doTest('arithmetics/25_evaluate-operations-vol1', done);
   });
 
+  it('should evaluate using different arithmetic operations in initial assignment vol1', function(done) {
+    doTest('arithmetics/25b_evaluate-operations-vol1-initial-assignment', done);
+  });
+
 
   it('should evaluate using different arithmetic operations vol2', function(done) {
     doTest('arithmetics/26_evaluate-operations-vol2', done);
