@@ -22,6 +22,7 @@ export function doTest(pathPart, doneCallback) {
 
     /*jslint evil: true */
     equal(eval(input.code), eval(expected));
+    equal(!!input.map, true);
     doneCallback();
   });
 }
