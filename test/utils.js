@@ -13,7 +13,8 @@ function getCode(lePath) {
 }
 
 export function doTest(pathPart, doneCallback) {
-  var input = getCode(cwd + '/test/fixtures/' + pathPart + '.arnoldc');
+  var inputFilePath = cwd + '/test/fixtures/' + pathPart + '.arnoldc';
+  var input = getCode(inputFilePath);
 
   readFile(cwd + '/test/fixtures/' + pathPart + '.js', fileOptions, function(err, expected) {
     if (err) {
@@ -22,7 +23,9 @@ export function doTest(pathPart, doneCallback) {
 
     /*jslint evil: true */
     equal(eval(input.code), eval(expected));
-    equal(!!input.map, true);
+    equal(
+      JSON.parse(input.map.toString()).sourcesContent, 
+      readFileSync(inputFilePath, 'utf-8'));
     doneCallback();
   });
 }
