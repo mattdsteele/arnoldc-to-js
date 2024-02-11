@@ -9,7 +9,7 @@ var cwd = process.cwd();
 function getCode(lePath) {
   // from main.js
   var data = readFileSync(lePath, 'utf-8');
-  return transpile(data, lePath).toString();
+  return transpile(data, lePath).toStringWithSourceMap({ file: `${lePath}-sourceMap`});
 }
 
 export function doTest(pathPart, doneCallback) {
@@ -21,7 +21,7 @@ export function doTest(pathPart, doneCallback) {
     }
 
     /*jslint evil: true */
-    equal(eval(input), eval(expected));
+    equal(eval(input.code), eval(expected));
     doneCallback();
   });
 }
